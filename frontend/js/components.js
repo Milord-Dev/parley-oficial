@@ -16,7 +16,7 @@ const App = {
                 .then(response => response.text())
                 .then(html => {
                     targetElement.innerHTML = html;
-                    if (callback) callback(); // Ejecutar función extra si se pasa
+                    if (callback) callback(); 
                 })
             .catch(err => console.error(`Error cargando ${componentName}:`, err));
         },
