@@ -1,0 +1,81 @@
+:root {
+  --background-gradient: linear-gradient(to right, #13292c, #181818);
+  --color-texto: #ffffff;
+  --card-color: #242424;
+  --border-color: #4872a1;
+  --card-gradient: linear-gradient(to right, #0176e2, #003067);
+}
+
+body {
+  background: var(--background-gradient);
+  font-family: Arial, sans-serif;
+  color: var(--color-texto);
+}
+
+.GranContenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+.DatosPersonales {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: var(--card-color);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 120px;
+  margin-right: 120px;
+  padding: 5px;
+  width: 100%;
+}
+.DatosUsuario {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+hr {
+  padding-top: 70px;
+  margin: 20px;
+}
+
+.botones {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.btnEditar {
+  background: #4c4c4c;
+  color: var(--color-texto);
+  border: none;
+  border-radius: 10px;
+  margin: 11px;
+  cursor: pointer;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  white-space: nowrap; /* Mantiene el texto en una línea */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 20px;
+}
+
+.btnCerrarSesion {
+  background: #4c4c4c;
+  color: var(--color-texto);
+  border: none;
+  border-radius: 10px;
+  margin: 11px;
+  cursor: pointer;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  white-space: nowrap; /* Mantiene el texto en una línea */
+  padding: 10px 20px;
+  font-size: 20px;
+}
+.Saldo {
+  background: var(--card-gradient);
+}
