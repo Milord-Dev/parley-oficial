@@ -16,7 +16,7 @@
           <h1>Bienvenido tu perfil</h1>
         </center>
 
-        <div class="DatosPersonales">
+        <section class="DatosPersonales">
           <div class="DatosUsuario">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@
                 d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"
               />
             </svg>
-            <hr />
+            <hr class="DivisorVertical"/>
             <div>
               <h2>Username</h2>
               <h5>User ID: 123456789</h5>
@@ -40,11 +40,47 @@
             <button class="btnEditar">Editar Datos</button>
             <button class="btnCerrarSesion">Cerrar Sesion</button>
           </div>
-        </div>
+        </section>
 
-        <div class="Saldo">adfad</div>
-        <div calss="Estadisticas">a</div>
-        <div class="Historial">a</div>
+        <section class="Paneles">
+          <div class="Saldo Card">
+            <div class="SaldoTexto">
+              <h3>Mi balance</h3>
+              <h1>30,000.00</h1>
+              <p>ingresado hoy <strong>50 </strong></p>
+            </div>
+            <div class="USDtexto">USD$
+              <button class="AgregarFondos"> Agregar Fondos </button>
+            </div>
+          </div>
+
+          <div class="Estadisticas Card">
+            <h3>Estadisticas</h3>
+            <hr>
+            <div class="EstadisticasGrid">
+              <div class="statBox">
+                <p>Total de Parleys</p>
+                <h2>50</h2>
+              </div>
+              <div class="statBox">
+                <p>Total de victorias</p>
+                <h2>50</h2>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="HistorialPanel">
+          <div class="Historial Card">
+            <h3>Historial</h3>
+            <hr>
+            <ol>
+              <li>Real vs Fc Barca | <strong>Ganado</strong></li>
+              <li>Real vs Fc Barca | <strong>Ganado</strong></li>
+              <li>Real vs Fc Barca | <strong>Perdido</strong></li>
+            </ol>
+          </div>
+        </section>
       </div>
     </main>
 
