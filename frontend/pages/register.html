@@ -1,23 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=\, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="../css/register.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <link href="../css/login.css" rel="stylesheet">
 </head>
 <body>
-    <!--Aqui va el header-->
-    <div id="header"></div>
-    <!--Aqui va el contenido-->
-    <main>
-        <h2>Hola Profe</h2>
-    </main>
+    <div class="auth-container">
+        <!-- Imagen -->
+        <div class="auth-image">
+            <span>Imagen</span>
+        </div>
 
-    <!--Aqui va el footer-->
+        <div class="auth-form-container">
+            <h2 class="form-title">Empecemos</h2>
+            <p class="form-subtitle">Crea tu cuenta para empezar a apostar</p>
+            
+            <form id="register-form">
+                
+                <input type="text" id="nombre-completo" name="nombre-completo" placeholder="Nombre completo" class="form-input" required>
+                <input type="email" id="email" name="email" placeholder="Email" class="form-input" required>
+                <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" placeholder="Fecha de nacimiento" class="form-input" required>
+                <input type="text" id="direccion" name="direccion" placeholder="Dirección" class="form-input">
+                <input type="text" id="provincia" name="provincia" placeholder="Provincia" class="form-input">
+                <input type="tel" id="telefono" name="telefono" placeholder="Teléfono" class="form-input">
+                <input type="password" id="password" name="password" placeholder="Contraseña" class="form-input" required>
+                <input type="password" id="repetir-password" name="repetir-password" placeholder="Repetir contraseña" class="form-input" required>
 
-    <!--Aqui van los importes js-->
+                <button type="submit" class="btn btn-primary">
+                    Registrarse
+                </button>
+>>>>>>> 406ea78 (Fase inicial registro y login con mongodb)
+
+                <p class="form-footer-text">
+                    ¿Ya tienes cuenta? <a href="login.html" class="form-link">Inicia sesión</a>
+                </p>
+            </form>
+            <div id="message-container-register" class=""></div>
+        </div>
+    </div>
+
     <script src="../js/auth.js"></script>
-    <script src="../js/components.js"></script>
 </body>
 </html>
