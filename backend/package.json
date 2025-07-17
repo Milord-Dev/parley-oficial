@@ -17,6 +17,10 @@
   "license": "MIT",
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
-    "fastify": "^5.4.0"
+    "@fastify/cors": "^11.0.1",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.0",
+    "fastify": "^5.4.0",
+    "mongoose": "^8.16.3"
   }
 }
