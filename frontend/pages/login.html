@@ -1,22 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=\, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="../css/login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link href="../css/login.css" rel="stylesheet">
 </head>
 <body>
-    <!--Aqui va el header-->
-    <div id="header"></div>
-    <!--Aqui va el contenido-->
-    <main>
+    <div class="auth-container">
+        <!-- Imagen -->
+        <div class="auth-image">
+            <span>Imagen</span>
+        </div>
 
-    </main>
+        <div class="auth-form-container">
+            <h2 class="form-title">Bienvenido</h2>
+            <p class="form-subtitle">Llena los campos para ingresar a tu cuenta</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                <div class="text-right">
+                    <a href="#" class="form-link">¿Olvidaste tu contraseña?</a>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    Iniciar Sesión
+                </button>
+                <p class="form-footer-text">
+                    ¿No tienes cuenta? <a href="register.html" class="form-link">Regístrate</a>
+                </p>
+            </form>
+            <div id="message-container-login" class=""></div>
+        </div>
+    </div>
 
-    <!--Aqui va el footer-->
 
-    <!--Aqui van los importes js-->
     <script src="../js/auth.js"></script>
     <script src="../js/components.js"></script>
 </body>
