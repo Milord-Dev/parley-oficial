@@ -1,0 +1,36 @@
+.site-header {
+    color: white;
+    padding: 1rem 0;
+}
+
+.site-header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.site-header .logo a {
+    text-decoration: none;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.site-header .main-nav a {
+    margin-left: 1rem;
+    text-decoration: none;
+    color: white;
+}
+
+.site-header .main-nav a:hover {
+    text-decoration: underline;
+}
+
+  /* Clase para marcar link activo */
+.active-link {
+    font-weight: bold;
+    text-decoration: underline;
+}
