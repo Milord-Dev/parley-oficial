@@ -10,7 +10,7 @@
             //Verificamos si los contenedores existen antes de usarlos.
             if (headerContainer) {
                 await App.methods.loadComponent("header", headerContainer);
-                 App.methods.highlightActiveNav();
+                App.methods.highlightActiveNav();
             }
 
             if (footerContainer) {
