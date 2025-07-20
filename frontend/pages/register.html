@@ -3,42 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Usuario</title>
+    <title>Registro - BetSlip</title>
     <link href="../css/login.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="auth-container">
-        <!-- Imagen -->
-        <div class="auth-image">
-            <span>Imagen</span>
-        </div>
+    <header class="site-header">
+        <div class="logo">BetSlip</div>
+    </header>
 
-        <div class="auth-form-container">
-            <h2 class="form-title">Empecemos</h2>
-            <p class="form-subtitle">Crea tu cuenta para empezar a apostar</p>
+        <main class="auth-main">
+            <div class = "auth-form-wrapper">
+                <h2 class="auth-title">Bienvenido</h2>
+                <p class="auth-subtitle">Llena los campos para crear tu cuenta</p>
             
-            <form id="register-form">
+            <form id="register-form" class="auth-form">
                 
-                <input type="text" id="nombre-completo" name="nombre-completo" placeholder="Nombre completo" class="form-input" required>
-                <input type="email" id="email" name="email" placeholder="Email" class="form-input" required>
-                <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" placeholder="Fecha de nacimiento" class="form-input" required>
-                <input type="text" id="direccion" name="direccion" placeholder="Dirección" class="form-input">
-                <input type="text" id="provincia" name="provincia" placeholder="Provincia" class="form-input">
-                <input type="tel" id="telefono" name="telefono" placeholder="Teléfono" class="form-input">
-                <input type="password" id="password" name="password" placeholder="Contraseña" class="form-input" required>
-                <input type="password" id="repetir-password" name="repetir-password" placeholder="Repetir contraseña" class="form-input" required>
+                <div class="form-group">
+                    <label for="nombre-completo" class="form-label">Nombre:</label>
+                    <input type="text" id="nombre-completo" name="nombre-completo" placeholder="Nombre completo" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="ej: usuario123@ejemplo.com " class="form-input" required>
+                </div>
 
-                <button type="submit" class="btn btn-primary">
-                    Registrarse
-                </button>
+                <div class="form-group">
+                    <label for="fecha-nacimiento" class="form-label">Fecha de nacimiento:</label>
+                    <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" placeholder="Fecha de nacimiento" class="form-input" required>
+                </div>
 
-                <p class="form-footer-text">
-                    ¿Ya tienes cuenta? <a href="login.html" class="form-link">Inicia sesión</a>
+                <div class="form-group">
+                    <label for="telefono" class="form-label">Teléfono (Opcional):</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Teléfono" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" id="password" name="password" placeholder="Contraseña" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="repetir-password" class="form-label">Repetir Contraseña:</label>
+                    <input type="password" id="repetir-password" name="repetir-password" placeholder="Confirmar contraseña" class="form-input" required>
+                </div>
+                
+                
+                <button type="submit" class="btn-submit">Registrarse</button>
+
+                <p class="auth-redirect-link">
+                    ¿Ya tienes una cuenta? <a href="login.html">Iniciar sesión</a>
                 </p>
             </form>
             <div id="message-container-register" class=""></div>
         </div>
-    </div>
+    </main>
 
     <script src="../js/auth.js"></script>
 </body>

@@ -54,19 +54,56 @@
     const handleRegisterSubmit = async (event) => {
       event.preventDefault();
 
-      // Obtenemos los datos manualmente
+      const nombreCompleto = document.getElementById('nombre-completo').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const repeatPassword = document.getElementById('repetir-password').value;
+      const fechaNacimiento = document.getElementById('fecha-nacimiento').value;
+      const telefono = document.getElementById('telefono').value.trim();
+      
+      
+      // verifica que sean solo números y entre 7 y 15 dígitos (telefono)
+      const phoneRegex = /^\d{7,15}$/;
+
+      // Validación básica 
+
+      if (nombreCompleto.length < 3) {
+        displayMessage(registerForm, 'El nombre debe tener al menos 3 caracteres.', 'error');
+        return;
+      }
+
+      if (password.value !== repeatPassword.value) {
+          displayMessage(registerForm, 'Las contraseñas no coinciden.', 'error');
+          return;
+      }
+
+      if (password.length < 6) {
+        displayMessage(registerForm, 'La contraseña debe tener al menos 6 caracteres.', 'error');
+        return;
+      }
+
+      if (password !== repeatPassword) {
+        displayMessage(registerForm, 'Las contraseñas no coinciden.', 'error');
+        return;
+      }
+
+      if (telefono && !phoneRegex.test(telefono)) {
+        displayMessage(registerForm, 'El número de teléfono solo debe contener entre 7 a 15 caracteres .', 'error');
+        return;
+      }
 
       const payload = {
-        nombreCompleto: document.getElementById('nombre-completo').value,
-        email: document.getElementById('email').value,
-        fechaNacimiento: document.getElementById('fecha-nacimiento').value,
-        direccion: document.getElementById('direccion').value,
-        provincia: document.getElementById('provincia').value,
-        telefono: document.getElementById('telefono').value,
-        password: document.getElementById('password').value
+        nombreCompleto,
+        email,
+        fechaNacimiento,
+        password,
+        telefono
       };
       
       try {
+
+        displayMessage(registerForm, 'Procesando...', 'success');
+
         const response = await fetch(`${API_BASE_URL}/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -80,6 +117,10 @@
         }
         
         displayMessage(registerForm, data.message, 'success');
+
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
 
       } catch (error) {
         displayMessage(registerForm, error.message, 'error');
