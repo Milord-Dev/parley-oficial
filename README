@@ -1,0 +1,3 @@
+Para iniciar la bd - mogod
+para iniciar el servicio - mongosh
+para iniciar el servidor - cd backend y -node app.js
