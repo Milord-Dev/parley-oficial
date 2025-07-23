@@ -1,15 +1,27 @@
-// controllers/payments.controller.js
-const { createCheckoutSession } = require('../services/payments.service');
+import { stripe } from '../config/stripe.js';
 
-const handleCreateCheckoutSession = async (req, res) => {
+export const createCheckoutSession = async (request, reply) => {
   try {
-    const session = await createCheckoutSession(req.body.items);
-    res.status(200).json({ id: session.id });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Recarga BetSlip',
+          },
+          unit_amount: 100, // $1 en centavos
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: 'http://localhost:5500/perfil.html', // Cambia a tu ruta real
+      cancel_url: 'http://localhost:5500/perfil.html',
+    });
 
-module.exports = {
-  handleCreateCheckoutSession,
+    reply.send({ url: session.url });
+  } catch (err) {
+    console.error(err);
+    reply.code(500).send({ error: 'Error al crear la sesión de pago' });
+  }
 };
