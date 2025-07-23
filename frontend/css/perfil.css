@@ -12,10 +12,26 @@ body {
   color: var(--color-texto);
 }
 
-.GranContenedor {
+.ContenedorPrincipal {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+.header {
+  flex:2;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 30%; /* o usa % si lo prefieres */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.GranContenedor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
   padding: 20px;
 }
 .DatosPersonales {
@@ -28,8 +44,8 @@ body {
   padding: 20px;
   margin-bottom: 20px;
   margin-top: 20px;
-  margin-left: 120px;
-  margin-right: 120px;
+  /* margin-left: 120px;
+  margin-right: 120px; */
   padding: 5px;
   width: 100%;
 }
@@ -102,7 +118,6 @@ body {
   opacity: 0.2;
 }
 .AgregarFondos {
-
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -116,7 +131,9 @@ body {
 }
 
 .EstadisticasGrid {
+
   display: flex;
+  justify-content: space-around;
   gap: 20px;
   flex-wrap: wrap;
 }
@@ -134,8 +151,8 @@ body {
   font-size: 28px;
   margin-top: 10px;
 }
-.HistorialPanel{
-   display: flex;
+.HistorialPanel {
+  display: flex;
   flex-direction: row;
   justify-content: center;
   text-align: center;
