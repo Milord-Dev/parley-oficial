@@ -24,6 +24,13 @@ const userSchema = new mongoose.Schema({
     },
     telefono: {
         type: String
+    },
+
+    balance: {
+        type: Number,      // Guardaremos el saldo como un número.
+        required: true,    
+        default: 0,        //cuando se registra un nuevo usuario su saldo inicial es 0.
+        min: 0             // para que el saldo no sea negativo (por si acaso)
     }
 
 }, {
