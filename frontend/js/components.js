@@ -23,7 +23,7 @@
             async loadComponent(componentName, targetElement) {
                 try {
                     // Pide el archivo HTML al servidor.
-                    const response = await fetch(`/components/${componentName}.html`);
+                    const response = await fetch(`../components/${componentName}.html`);
                     // Si el servidor responde con un error 
                     if (!response.ok) {
                         throw new Error(`No se pudo cargar: ${componentName}`);
