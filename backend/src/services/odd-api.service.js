@@ -1,5 +1,4 @@
 // /Backend/src/services/odd-api.service.js
-
 import axios from 'axios';
 import dotenv from 'dotenv';
 import { Event } from '../models/events.js'; // Esto va a importar el modelo del event.js
@@ -25,7 +24,7 @@ export const getSports = async () => {
 };
 
 // Función principal para obtener los eventos y cuotas
-export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 'us', markets = 'h2h', oddsFormat = 'decimal') => {
+export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 'us', markets = 'h2h', oddsFormat = 'decimal') => { // <-- ¡CORRECCIÓN AQUÍ!
     try {
         const url = `${ODDS_API_BASE_URL}/v4/sports/${sport}/odds?apiKey=${API_KEY}&regions=${regions}&markets=${markets}&oddsFormat=${oddsFormat}`;
         console.log(`Obteniendo probabilidades de: ${url}`); // CORRECCIÓN: Usar template literal
@@ -57,7 +56,7 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
             if (foundH2hMarket) {
                 mainOdds = {
                     key: foundH2hMarket.key,
-                    last_updated: new Date(foundH2hMarket.last_update), // Usar last_update según la API
+                    last_update: new Date(foundH2hMarket.last_update), // Usar last_update según la API
                     outcomes: foundH2hMarket.outcomes.map(outcome => ({
                         name: outcome.name,
                         price: outcome.price,
