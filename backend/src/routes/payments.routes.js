@@ -1,16 +1,5 @@
-// routes/payments.routes.js
-const express = require('express');
-const router = express.Router();
-const { handleCreateCheckoutSession } = require('../controllers/payments.controller');
+import { createCheckoutSession } from '../controllers/payments.controller.js';
 
-router.post('/create-checkout-session', handleCreateCheckoutSession);
-
-module.exports = router;
-
-
-// api/payments.api.js
-const paymentsRoutes = require('../src/routes/payments.routes');
-
-module.exports = (app) => {
-  app.use('/api/payments', paymentsRoutes);
-};
+export default async function paymentsRoutes(app) {
+  app.post('/payments/create-checkout-session', createCheckoutSession);
+}
