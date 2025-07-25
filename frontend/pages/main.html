@@ -3,36 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main</title>
+    <title>BetSlip - Apuestas Deportivas</title>
     <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!--Aqui va el header-->
-    <div id="header"></div>
-    <!--Aqui va el contenido-->
-    <main class="app-container">
-        <aside class="app-container__sidebar">
-            <div class="category-sport">
-                <span>⚽ Futbol</span>
-                <h4>por ahora es en mantenimiento xd</h4>
+    <header id="header"></header>
+    <div class="app-layout">
+        <!-- el sidebar  -->
+        <aside class="sidebar">
+            <div class="sport-category">
+                <div class="sport-category__header">
+                    <span>
+                        <img src="/frontend/images/icon-foot-ball.svg" alt="Fútbol" class="sport-icon-img">
+
+                        Fútbol
+                    </span>
+                    <span>▼</span>
+                </div>
+                <ul class="sport-category__list">
+                    <li>UEFA Champions League</li>
+                    <li>FIFA World Cup</li>
+                    <li>England Premier League</li>
+                </ul>         
             </div>
-            <div class="category-sport">
-                <span>🏀 NBA</span>
-                <h4>por ahora es en mantenimiento xd</h4>
+
+            <div class="sport-category">
+                <div class="sport-category__header">
+                    <span>
+                        <img src="/frontend/images/icon-basket-ball.svg" alt="BasketBall" class="sport-icon-img">
+
+                        Básquetbol
+                    </span>
+                    <span>▼</span>
+                </div>
+                <ul class="sport-category__list">
+                    <li>NBA</li>
+                    <li>WNBA</li>
+                    
+                </ul>
             </div>
-            <div class="category-sport">
-                <span>⚾ MLB</span>
-                <h4>por ahora es en mantenimiento xd</h4>
+
+            <div class="sport-category">
+                <div class="sport-category__header">
+                    <span>
+                        <img src="/frontend/images/icon-base-ball.svg" alt="BaseBall" class="sport-icon-img">
+
+                        Beisból
+                    </span>
+                    <span>▼</span>
+                </div>
+                <ul class="sport-category__list">
+                    <li>MLB</li>
+                    <li>?</li>
+                    
+                </ul>
             </div>
-            <div class="category-sport">
-                <span>🎾 ATP</span>
-                <h4>por ahora es en mantenimiento xd</h4>
+
+             <div class="sport-category">
+                <div class="sport-category__header">
+                    <span>
+                        <img src="/frontend/images/icon-tennis.svg" alt="Tenis" class="sport-icon-img">
+
+                        Tenis
+                    </span>
+                    <span>▼</span>
+                </div>
+                <ul class="sport-category__list">
+                    <li>Wimbledon</li>
+                    <li>?</li>
+                    
+                </ul>
             </div>
+
         </aside>
-    </main>
+
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <img src="/frontend/images/fulbo_def.jpg" alt="Partido de futbol" class="hero-image">
+            
+            <div class="content-title">
+                <img src="/frontend/images/icon-foot-ball.svg" alt="Fútbol" class="sport-icon-img">
+
+                <h2>Fútbol</h2>
+            </div>
+
+            <!-- El contenedor para los eventos se llenará con JavaScript -->
+            <div id="events-container"></div>
+
+        </main> 
+    </div>
 
     <!--Aqui va el footer-->
-    <div id="footer"></div>
+    <footer id="footer"></footer>
 
     <!--Aqui van los importes js-->
     <script src="../js/main.js"></script>

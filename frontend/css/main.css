@@ -1,4 +1,372 @@
-body{
-    background: linear-gradient(to right, #13292C, #181818);
-    color: #fff;
+/* unificamos estilos para que esten en un solo archivo*/
+:root {
+    --bg-dark: #0D2024;
+    --text-primary: #FFFFFF;
+    --text-secondary: #a0aec0;
+    --accent-blue1: #1d4ed8;
+    --accent-blue: #2563eb;
+    --border-color: #374151;
+    --color-header: #2D3748;
+    --input-bg: #1A2E33;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Reseteo y Estilos globales */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 2px solid var(--accent-blue);
+}
+
+.site-header .logo {
+    font-size: 2.25rem; 
+    font-weight: 700;
+}
+
+.site-header .header-button {
+    background-color: var(--accent-blue);
+    color: var(--text-primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.site-header .header-button:hover {
+    background-color: var(--accent-blue); 
+}
+
+/* Contenedor Principal  */
+.auth-main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.auth-form-wrapper {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-title {
+    font-size: 2rem; 
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+}
+
+/* Formulario */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+}
+
+.form-group {
+    position: relative;
+    text-align: left;   
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem; 
+}
+
+.form-input {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-blue1);
+    box-shadow: 0 0 0 2px rgba(104, 211, 145, 0.3);
+}
+
+.form-link {
+    font-size: 0.875rem;
+    text-align: right;
+    margin-top: -0.5rem; 
+    margin-bottom: 1rem;
+}
+
+.btn-submit {
+    background-color: var(--accent-blue1);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-submit:hover {
+    opacity: 0.9;
+}
+
+.auth-redirect-link {
+    margin-top: 2rem;
+    color: var(--text-secondary);
+}
+
+.auth-redirect-link a {
+    color: var(--accent-blue1);
+    font-weight: 600;
+}
+
+
+
+
+/* --- LAYOUT PRINCIPAL APP main.html --- */
+.app-layout {
+    display: flex;
+    height: calc(100vh - 90px); /* Altura total menos la altura del header */
+}
+
+.sidebar {
+    width: 280px;
+    background-color: var(--input-bg); 
+    padding: 1.5rem 1rem;
+    overflow-y: auto; /* Permite scroll si hay muchas categorías */
+    flex-shrink: 0; /* Evita que el sidebar se encoja */
+}
+
+.main-content {
+    flex-grow: 1; /* Ocupa el resto del espacio */
+    padding: 2rem;
+    overflow-y: auto; 
+}
+
+/* --- Estilos del Sidebar --- */
+.sport-category {
+    margin-bottom: 1rem;
+}
+
+.sport-category__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background-color: var(--color-header); 
+    cursor: pointer;
+}
+
+.sport-category__header span {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+}
+
+.sport-category__header svg {
+    width: 20px;
+    height: 20px;
+}
+
+.sport-category__list {
+    list-style: none;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+.sport-category__list li {
+    padding: 0.5rem;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sport-category__list li:hover {
+    background-color: var(--color-header);
+}
+
+/* --- Estilos del Contenido Principal --- */
+.hero-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+    border-radius: 12px;
+    object-position: center 80%
+    
+}
+
+/* Estilo para el icono*/
+.sport-icon-img {
+    width: 30px;
+    height: 30px;
+    /* Ayuda a alinear la imagen con el texto */
+    vertical-align: middle; 
+    margin-right: 0.75rem;
+}
+
+.content-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Estilos de la Tarjeta de Evento (Event Card) --- */
+.event-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    gap: 1.5rem;
+    border-left: 3px solid transparent; /* Borde para hover/active */
+    transition: border-left-color 0.2s;
+}
+
+.event-card:hover {
+    border-left-color: var(--accent-green);
+}
+
+.event-info {
+    width: 180px;
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.event-info__league {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.event-info__teams {
+    font-size: 1.1rem;
+}
+
+.event-markets {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.market-group {
+    text-align: center;
+}
+
+.market-title {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.bet-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.bet-btn {
+    background-color: #2D3748;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem;
+    min-width: 50px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.bet-btn:hover {
+    border-color: var(--accent-green);
+}
+
+.bet-btn--selected {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.bet-btn--more {
+    font-weight: 700;
+}
+
+
+/* ESTILOS DEL FOOTER  */
+
+.site-footer {
+    background-color: var(--input-bg); 
+    color: var(--text-secondary); 
+    padding: 1.5rem 2rem; 
+    border-top: 1px solid var(--border-color); 
+    margin-top: auto; /* Empuja el footer al final de la página en layouts de flexbox */
+}
+
+
+.site-footer .container {
+    max-width: 1200px; 
+    margin: 0 auto; /* Centrar horizontalmente */
+    display: flex;
+    justify-content: space-between; /* Pone el copyright a la izq y la nav a la der */
+    align-items: center; 
+    flex-wrap: wrap; 
+    gap: 1rem; 
+}
+
+.site-footer p {
+    margin: 0; /* Quita el margen por defecto del párrafo */
+    font-size: 0.875rem;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 1.5rem; /* Espacio entre los enlaces de navegación */
+}
+
+.footer-nav a {
+    color: var(--text-primary); /* Enlaces con color primario para que destaquen */
+    font-weight: 600;
+    transition: color 0.2s ease-in-out; /* Transición suave para el hover */
+}
+
+.footer-nav a:hover {
+    color: var(--accent-green); /* Cambia a verde al pasar el ratón, como en los formularios */
 }
