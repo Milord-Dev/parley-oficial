@@ -7,10 +7,21 @@
     <link rel="stylesheet" href="../css/perfil.css" />
   </head>
   <body>
-    <!--Aqui va el header-->
-    <div id="header"></div>
-    <!--Aqui va el contenido-->
     <main>
+<div class="ContenedorPrincipal">
+      <div class="header">
+        <center>
+          <a href="/frontend/pages/main.html" data-page="main"><h1>BetSlip</h1></a>
+        </center>
+        <ul>
+          <li><a href="/frontend/pages/bets.html" data-page="bets">Bets</a></li>
+          <li><a href="/frontend/pages/perfil.html" data-page="perfil">Perfil</a></li>
+          <li><a href="/frontend/pages/payments.html" data-page="payments">Payments</a></li>
+          <li><a href="/frontend/pages/login.html" data-page="login">Login</a></li>
+          <li><a href="/frontend/pages/register.html" data-page="register">Register</a></li>
+        </ul>
+      </div>
+
       <div class="GranContenedor">
         <center>
           <h1>Bienvenido tu perfil</h1>
@@ -30,7 +41,7 @@
                 d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"
               />
             </svg>
-            <hr class="DivisorVertical"/>
+            <hr class="DivisorVertical" />
             <div>
               <h2>Username</h2>
               <h5>User ID: 123456789</h5>
@@ -49,14 +60,15 @@
               <h1>30,000.00</h1>
               <p>ingresado hoy <strong>50 </strong></p>
             </div>
-            <div class="USDtexto">USD$
-              <button class="AgregarFondos"> Agregar Fondos </button>
+            <div class="USDtexto">
+              USD$
+              <button class="AgregarFondos">Agregar Fondos</button>
             </div>
           </div>
 
           <div class="Estadisticas Card">
             <h3>Estadisticas</h3>
-            <hr>
+            <hr />
             <div class="EstadisticasGrid">
               <div class="statBox">
                 <p>Total de Parleys</p>
@@ -73,7 +85,7 @@
         <section class="HistorialPanel">
           <div class="Historial Card">
             <h3>Historial</h3>
-            <hr>
+            <hr />
             <ol>
               <li>Real vs Fc Barca | <strong>Ganado</strong></li>
               <li>Real vs Fc Barca | <strong>Ganado</strong></li>
@@ -82,12 +94,9 @@
           </div>
         </section>
       </div>
+      </div>
     </main>
-
-    <!--Aqui va el footer-->
-
     <!--Aqui van los importes js-->
     <script src="../js/perfil.js"></script>
-    <script src="../js/components.js"></script>
   </body>
 </html>
