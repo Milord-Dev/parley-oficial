@@ -19,11 +19,18 @@
           },
 
           displayMessage: (formElement, message, type) => {
-            // Buscamos un div que esté justo despues del formulario
-            const messageContainer = formElement.nextElementSibling;
-            if (messageContainer) {
-              messageContainer.textContent = message;
-              messageContainer.className = type; // Asigna 'success' o 'error'
+            //buscamos el contenedor de mensajes dentro del mismo contenedor padre del formulario
+            const wrapper = formElement.parentElement;
+            if (wrapper) {
+                const messageContainer = wrapper.querySelector('.message-container');
+                if (messageContainer) {
+                    messageContainer.textContent = message;
+                    messageContainer.classList.remove('success', 'error');
+                  //Añadimos un pequeño retardo para que el navegador note el cambio y aplique la transición si la hubiera.
+                    setTimeout(() => {
+                    messageContainer.classList.add(type);
+                  }, 10);
+                }
             }
           }
     };
@@ -77,6 +84,32 @@
           const telefono = document.getElementById('telefono').value.trim();
           
           
+          //Funcion para calcular la edad del usuario
+
+          const getAge = (birthDateString) => {
+          const today = new Date();
+          const birthDate = new Date(birthDateString);
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDifference = today.getMonth() - birthDate.getMonth();
+              
+          // Si no ha pasado el cumpleaños de este año, se resta 1
+              if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                  age--;
+              }
+              return age;
+          };
+
+          if (!fechaNacimiento) {
+              methods.displayMessage(registerForm, 'La fecha de nacimiento es obligatoria.', 'error');
+              return;
+          }
+          
+          const userAge = getAge(fechaNacimiento);
+          if (userAge < 18) {
+              methods.displayMessage(registerForm, 'Debes ser mayor de 18 años para registrarte.', 'error');
+              return;
+          }
+
           // verifica que sean solo números y entre 7 y 15 dígitos (telefono)
           const phoneRegex = /^\d{7,15}$/;
 

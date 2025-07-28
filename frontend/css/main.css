@@ -5,6 +5,8 @@
     --text-secondary: #a0aec0;
     --accent-blue1: #1d4ed8;
     --accent-blue: #2563eb;
+    --accent-green: #68D391;
+    --accent-red: #ef4444;
     --border-color: #374151;
     --color-header: #2D3748;
     --input-bg: #1A2E33;
@@ -154,6 +156,18 @@ a {
     font-weight: 600;
 }
 
+.message-container {
+    margin-top: 1rem;
+    font-weight: 600;
+    min-height: 1.5em; /* Le da un espacio fijo para evitar saltos en la interfaz */
+    transition: color 0.3s ease-in-out;
+}
+.message-container.success {
+    color: var(--accent-green);
+}
+.message-container.error {
+    color: var(--accent-red); /* Un color rojo para los errores */
+}
 
 
 
