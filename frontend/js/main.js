@@ -7,12 +7,6 @@
 
         const methods = {
 
-            handleLogout: () => {
-                console.log('Cerrando sesión');
-                localStorage.removeItem('authToken');
-                window.location.href = '/frontend/pages/login.html';
-            },
-
             renderEvents: (events) => {
                 if (!htmlElements.eventsContainer) {
                     console.error("El contenedor #events-container no fue encontrado.");
@@ -64,17 +58,6 @@
                 htmlElements.eventsContainer.innerHTML = eventsHtml;
             },
 
-
-            setupEventListeners: () => {
-                document.body.addEventListener('click', (event) => {
-                    // Si el elemento en el que se hizo clic tiene el id 'logout-button'
-                    if (event.target && event.target.id === 'logout-button') {
-                        event.preventDefault(); // Previene cualquier acción por defecto del enlace
-                        methods.handleLogout();
-                    }
-                });
-            },
-
             // Obtiene los eventos de la API 
 
             fetchAndRenderEvents: async () => {
@@ -114,7 +97,6 @@
 
         return {
             init: () => {
-                methods.setupEventListeners();
                 methods.fetchAndRenderEvents();
             }
         };

@@ -10,6 +10,7 @@
             //Verificamos si los contenedores existen antes de usarlos.
             if (headerContainer) {
                 await App.methods.loadComponent("header", headerContainer);
+                App.methods.adaptHeader();
                 App.methods.highlightActiveNav();
             }
 
@@ -37,6 +38,29 @@
                 }
             },
 
+            handleLogout() {
+                localStorage.removeItem('authToken');
+                window.location.href = '/frontend/pages/login.html';
+            },
+
+            adaptHeader() {
+                const currentPage = window.location.pathname.split("/").pop();
+                const profileLink = document.getElementById('header-profile-link');
+                const logoutButton = document.getElementById('logout-button');
+
+                // si estamos en la página de perfil, ocultamos el enlace "Perfil"
+                if (currentPage === 'perfil.html' && profileLink) {
+                    profileLink.style.display = 'none';
+                }
+
+                // siempre asignamos el evento al botón de logout del header
+                if (logoutButton) {
+                    logoutButton.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        App.methods.handleLogout();
+                    });
+                }
+            },
 
             highlightActiveNav() {
                 const path = window.location.pathname;

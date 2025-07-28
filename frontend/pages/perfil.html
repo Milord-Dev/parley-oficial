@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/perfil.css" />
   </head>
   <body>
+
     <main>
 <div class="ContenedorPrincipal">
       <div class="header">
@@ -43,8 +44,8 @@
             </svg>
             <hr class="DivisorVertical" />
             <div>
-              <h2>Username</h2>
-              <h5>User ID: 123456789</h5>
+              <h2 id="profile-username">Username</h2>
+              <h5 id="profile-userid">User ID: 123456789</h5>
             </div>
           </div>
           <div class="botones">
@@ -57,7 +58,7 @@
           <div class="Saldo Card">
             <div class="SaldoTexto">
               <h3>Mi balance</h3>
-              <h1>30,000.00</h1>
+              <h1 id="profile-balance">30,000.00</h1>
               <p>ingresado hoy <strong>50 </strong></p>
             </div>
             <div class="USDtexto">
@@ -96,6 +97,11 @@
       </div>
       </div>
     </main>
+
+
+    <!--Aqui va el footer-->
+  <footer id="footer"></footer>
+
     <!--Aqui van los importes js-->
     <script src="../js/perfil.js"></script>
   </body>
