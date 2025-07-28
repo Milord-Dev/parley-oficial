@@ -1,5 +1,7 @@
 import User from '../models/user.js'; 
 import bcrypt from 'bcrypt';         
+import { generateToken } from '../utils/jwt.js';
+
 
 async function authRoutes(fastify, options) {
 
@@ -60,8 +62,18 @@ async function authRoutes(fastify, options) {
                 return reply.status(401).send({ message: 'Credenciales inválidas.' });
             }
 
-            return reply.send({
-                message: 'Login exitoso.',
+            //usamos la funcion de modoulo de utilidades
+            const payload = {
+                id: user._id,
+                email: user.email,
+                nombre: user.nombreCompleto
+            }
+
+            const token = generateToken(payload);
+
+            return reply.send ({
+                message: 'Login exitoso',
+                token: token, 
                 user: { id: user._id, email: user.email, nombre: user.nombreCompleto }
             });
 
