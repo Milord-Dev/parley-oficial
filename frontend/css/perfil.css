@@ -15,15 +15,50 @@ body {
 .ContenedorPrincipal {
   display: flex;
   flex-direction: row;
+    min-height: 100vh;
+
 }
 .header {
-  display: flex;
-  flex-direction: column;
+
   /* width: 250px; Ancho fijo para la columna izquierda */
-  padding: 5%;
-  margin: 30px;
+  margin-top: 25px;
   box-sizing: border-box;
 }
+a{
+  text-decoration: none;
+  color: var(--color-texto);
+}
+ul {
+    list-style: none;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  ul li {
+    margin: 10px 0;
+  }
+
+  ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 10px 15px;
+    display: block;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+
+  ul li a:hover {
+    background-color: #3a3a5a;
+  }
+
+  ul hr {
+    border: none;
+    height: 1px;
+    background-color: #444;
+    margin: 10px 0;
+  }
 
 .GranContenedor {
   flex: 1;
@@ -66,7 +101,7 @@ body {
 }
 
 .btnEditar,
-.btnCerrarSesion {
+#CerrarSesion {
   background: #4c4c4c;
   color: var(--color-texto);
   border: none;
