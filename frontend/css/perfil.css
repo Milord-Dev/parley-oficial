@@ -12,10 +12,59 @@ body {
   color: var(--color-texto);
 }
 
+.ContenedorPrincipal {
+  display: flex;
+  flex-direction: row;
+    min-height: 100vh;
+
+}
+.header {
+
+  /* width: 250px; Ancho fijo para la columna izquierda */
+  margin-top: 25px;
+  box-sizing: border-box;
+}
+a{
+  text-decoration: none;
+  color: var(--color-texto);
+}
+ul {
+    list-style: none;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  ul li {
+    margin: 10px 0;
+  }
+
+  ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 10px 15px;
+    display: block;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+
+  ul li a:hover {
+    background-color: #3a3a5a;
+  }
+
+  ul hr {
+    border: none;
+    height: 1px;
+    background-color: #444;
+    margin: 10px 0;
+  }
+
 .GranContenedor {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   padding: 20px;
 }
 .DatosPersonales {
@@ -28,8 +77,8 @@ body {
   padding: 20px;
   margin-bottom: 20px;
   margin-top: 20px;
-  margin-left: 120px;
-  margin-right: 120px;
+  /* margin-left: 120px;
+  margin-right: 120px; */
   padding: 5px;
   width: 100%;
 }
@@ -52,7 +101,7 @@ body {
 }
 
 .btnEditar,
-.btnCerrarSesion {
+#CerrarSesion {
   background: #4c4c4c;
   color: var(--color-texto);
   border: none;
@@ -102,7 +151,6 @@ body {
   opacity: 0.2;
 }
 .AgregarFondos {
-
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -116,7 +164,9 @@ body {
 }
 
 .EstadisticasGrid {
+
   display: flex;
+  justify-content: space-around;
   gap: 20px;
   flex-wrap: wrap;
 }
@@ -134,8 +184,8 @@ body {
   font-size: 28px;
   margin-top: 10px;
 }
-.HistorialPanel{
-   display: flex;
+.HistorialPanel {
+  display: flex;
   flex-direction: row;
   justify-content: center;
   text-align: center;

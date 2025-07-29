@@ -20,7 +20,18 @@ const userSchema = new mongoose.Schema({
 
     fechaNacimiento: {
         type: Date,
-        required: true
+        required: [true, 'La fecha de nacimiento es obligatoria.'],
+    // validador
+        validate: {
+        validator: function(birthDate) {
+            // Calculamos la fecha que corresponde a hace 18 años
+            const date18YearsAgo = new Date();
+            date18YearsAgo.setFullYear(date18YearsAgo.getFullYear() - 18);
+            // La fecha de nacimiento debe ser anterior o igual a esa fecha
+            return birthDate <= date18YearsAgo;
+        },
+        message: 'El usuario debe ser mayor de 18 años.'
+        }
     },
     telefono: {
         type: String
