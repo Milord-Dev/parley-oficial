@@ -5,6 +5,8 @@
     const API_BASE_URL = 'http://localhost:3000';
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
+    const forgotPasswordForm = document.getElementById('forgot-password-form');
+    const resetPasswordForm = document.getElementById('reset-password-form');
 
 
     const methods = {
@@ -173,6 +175,50 @@
           } catch (error) {
             methods.displayMessage(registerForm, error.message, 'error');
           }
+        },
+
+        handleForgotPasswordSubmit: async (event) => {
+          event.preventDefault();
+          const email = document.getElementById('email').value;
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/auth/forgotpassword`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+              const data = await response.json();
+              methods.displayMessage(forgotPasswordForm, data.message, 'success');
+            } catch (error) {
+                methods.displayMessage(forgotPasswordForm, 'Error al conectar con el servidor.', 'error');
+            }
+        },
+
+        handleResetPasswordSubmit: async (event) => {
+          event.preventDefault();
+          const newPassword = document.getElementById('password').value;
+          // Extraer el token de la URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const resetToken = urlParams.get('token');
+
+            if (!resetToken) {
+                methods.displayMessage(resetPasswordForm, 'Token no encontrado en la URL.', 'error');
+                return;
+            }
+        
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/auth/resetpassword/${resetToken}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: newPassword })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message);
+
+                methods.displayMessage(resetPasswordForm, data.message, 'success');
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            } catch (error) {
+                methods.displayMessage(resetPasswordForm, error.message, 'error');
+            }
         }
 
     };
@@ -191,6 +237,8 @@
                 }
                 setupForm(loginForm, handlers.handleLoginSubmit);
                 setupForm(registerForm, handlers.handleRegisterSubmit);
+                setupForm(forgotPasswordForm, handlers.handleForgotPasswordSubmit);
+                setupForm(resetPasswordForm, handlers.handleResetPasswordSubmit);
 
                 window.addEventListener('pageshow', (event) => {
                   //event.persisted es true si la página se restaura desde la bfcache

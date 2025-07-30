@@ -23,6 +23,7 @@ const app = Fastify({
 // });
 
 app.register(cors, {
+
   origin: (origin, cb) => {
     const allowedOrigins = ['http://localhost:5500', 'http://127.0.0.1:5500'];
     if (!origin || allowedOrigins.includes(origin)) {
@@ -34,6 +35,7 @@ app.register(cors, {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
+
 });
 
 // JWT
