@@ -16,9 +16,9 @@ export const createCheckoutSession = async ({ priceId, quantity = 1, userId }) =
   return await stripe.checkout.sessions.create({
     mode: 'payment',
     line_items: [{ price: priceId, quantity }],
-    success_url: `${process.env.DOMAIN_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.DOMAIN_URL}/cancel?session_id={CHECKOUT_SESSION_ID}`,
-    payment_method_types: ['card'],
+  success_url: `${process.env.DOMAIN_URL}/frontend/pages/perfil.html?session_id={CHECKOUT_SESSION_ID}`,
+cancel_url: `${process.env.DOMAIN_URL}/frontend/pages/perfli.html?session_id={CHECKOUT_SESSION_ID}`,
+payment_method_types: ['card'],
     metadata: {
       userId // Pasamos el userId para luego obtenerlo en el webhook
     },
