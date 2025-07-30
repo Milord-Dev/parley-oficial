@@ -38,6 +38,9 @@ importers:
       node-cron:
         specifier: ^4.2.1
         version: 4.2.1
+      nodemailer:
+        specifier: ^7.0.5
+        version: 7.0.5
 
 packages:
 
@@ -396,8 +399,14 @@ packages:
     resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
+<<<<<<< HEAD
   obliterator@2.0.5:
     resolution: {integrity: sha512-42CPE9AhahZRsMNslczq0ctAEtqk8Eka26QofnqC346BZdHDySk3LWka23LI7ULIw11NmltpiLagIq8gBozxTw==}
+=======
+  nodemailer@7.0.5:
+    resolution: {integrity: sha512-nsrh2lO3j4GkLLXoeEksAMgAOqxOv6QumNRVQTJwKH4nuiww6iC2y7GyANs9kRAxCexg3+lTWM3PZ91iLlVjfg==}
+    engines: {node: '>=6.0.0'}
+>>>>>>> 3e4286e (Implementa el flujo completo de restablecimiento de contraseña)
 
   on-exit-leak-free@2.1.2:
     resolution: {integrity: sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA==}
@@ -889,7 +898,11 @@ snapshots:
 
   node-gyp-build@4.8.4: {}
 
+<<<<<<< HEAD
   obliterator@2.0.5: {}
+=======
+  nodemailer@7.0.5: {}
+>>>>>>> 3e4286e (Implementa el flujo completo de restablecimiento de contraseña)
 
   on-exit-leak-free@2.1.2: {}
 
