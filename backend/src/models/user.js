@@ -42,7 +42,11 @@ const userSchema = new mongoose.Schema({
         required: true,    
         default: 0,        //cuando se registra un nuevo usuario su saldo inicial es 0.
         min: 0             // para que el saldo no sea negativo (por si acaso)
-    }
+    },
+
+    // Campos para el reinicio de ocntraseña 
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
 
 }, {
     // agñade automáticamente los campos createdAt y updatedAt

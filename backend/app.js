@@ -19,7 +19,9 @@ const app = Fastify({
 
 //CORS para permitir peticiones del frontend
 app.register(cors, {
-  origin: "*",
+  origin: '*', 
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Incluye put y options ya uqe no permitia reinicar contraseña 
+  allowedHeaders: ["Content-Type", "Authorization"], // Permite los headers necesarios
 });
 
 // JWT
