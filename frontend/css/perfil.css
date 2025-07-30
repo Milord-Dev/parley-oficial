@@ -143,13 +143,29 @@ ul {
   display: flex;
   flex-direction: column;
   text-align: center;
+  align-items: center;
   position: absolute;
   right: 20px;
   bottom: 20px;
   font-size: 32px;
   font-weight: bold;
+}
+
+h4{
   opacity: 0.2;
 }
+
+input{
+  width: 50%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+
+    
+}
+
 .AgregarFondos {
   border: none;
   border-radius: 10px;

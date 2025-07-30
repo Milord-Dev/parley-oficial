@@ -1,6 +1,9 @@
 import Fastify from "fastify";
 import dotenv from "dotenv";
 import cors from "@fastify/cors";
+import fastifyStatic from '@fastify/static';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import userRoutes from './src/routes/user.routes.js';
 import authRoutes from "./src/routes/auth.routes.js";
 import paymentsRoutes from "./src/routes/payments.routes.js";
@@ -15,6 +18,15 @@ dotenv.config();
 
 const app = Fastify({
   logger: true,
+});
+// Para resolver rutas si usas ESModules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Servir archivos estáticos desde /frontend
+app.register(fastifyStatic, {
+  root: path.join(__dirname, 'frontend'),
+  prefix: '/frontend/', // <-- importante que coincida con tu URL
 });
 
 // CORS para permitir peticiones del frontend
