@@ -77,14 +77,29 @@
           window.location.href = "/frontend/pages/login.html";
           return;
         }
+
+        const amountInput = document.getElementById("amount-input");
+        const amount = parseFloat(amountInput.value);
+        if (isNaN(amount) || amount <= 0) {
+          alert("Por favor, ingresa un monto válido.");
+          return;
+        }
+        
+        const amountInCents = Math.round(amount * 100);
+
         try {
           const response = await fetch(
             `${API_BASE_URL}/api/v1/payments/create-checkout-session`,
             {
               method: "POST",
-              headers: { Authorization: `Bearer ${token}` },
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ amount: amountInCents }),
             }
           );
+
           const data = await response.json();
           if (!response.ok)
             throw new Error(data.message || "Error al crear sesión de pago.");

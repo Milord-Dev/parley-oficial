@@ -5,105 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perfil</title>
     <link rel="stylesheet" href="../css/perfil.css" />
+    <link href="../css/footer.css" rel="stylesheet" />
   </head>
   <body>
-
     <main>
-<div class="ContenedorPrincipal">
-      <div class="header">
-        <center>
-          <a href="/frontend/pages/main.html" data-page="main"><h1>BetSlip</h1></a>
-        </center>
-        <ul>
-          <li><a href="/frontend/pages/main.html">Inicio / Dashboard</a></li>
-          <hr>
-          <li><a href="/frontend/pages/perfil.html">Detalles de Parleys</a></li>
-          <hr>
-          <li><a href="/frontend/pages/payments.html" >Ayuda</a></li>
-          <li><a href="#" class="btnCerrarSesion">Cerrar Sesion</a></li>
-        </ul>
-      </div>
-
-      <div class="GranContenedor">
-        <center>
-          <h1>Bienvenido tu perfil</h1>
-        </center>
-
-        <section class="DatosPersonales">
-          <div class="DatosUsuario">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="86"
-              height="86"
-              fill="currentColor"
-              class="bi bi-person-fill"
-              viewBox="0 0 16 16"
+      <div class="ContenedorPrincipal">
+        <div class="header">
+          <center>
+            <a href="/frontend/pages/main.html" data-page="main"
+              ><h1>BetSlip</h1></a
             >
-              <path
-                d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"
-              />
-            </svg>
-            <hr class="DivisorVertical" />
-            <div>
-              <h2 id="profile-username">Username</h2>
-              <h5 id="profile-userid">User ID: 123456789</h5>
-            </div>
-          </div>
-          <div class="botones">
-            <button class="btnEditar">Editar Datos</button>
-            <button id="CerrarSesion" class="btnCerrarSesion">Cerrar Sesion</button>
-          </div>
-        </section>
-
-        <section class="Paneles">
-          <div class="Saldo Card">
-            <div class="SaldoTexto">
-              <h3>Mi balance</h3>
-              <h1 id="profile-balance">30,000.00</h1>
-              <p>ingresado hoy <strong>50 </strong></p>
-            </div>
-            <div class="USDtexto">
-              USD$
-              <button class="AgregarFondos">Agregar Fondos</button>
-            </div>
-          </div>
-
-          <div class="Estadisticas Card">
-            <h3>Estadisticas</h3>
+          </center>
+          <ul>
+            <li><a href="/frontend/pages/main.html">Inicio / Dashboard</a></li>
             <hr />
-            <div class="EstadisticasGrid">
-              <div class="statBox">
-                <p>Total de Parleys</p>
-                <h2>50</h2>
-              </div>
-              <div class="statBox">
-                <p>Total de victorias</p>
-                <h2>50</h2>
+            <li><a href="#">Ayuda</a></li>
+            <hr />
+            <li><a href="#" class="btnCerrarSesion">Cerrar Sesion</a></li>
+          </ul>
+        </div>
+
+        <div class="GranContenedor">
+          <center>
+            <h1>Bienvenido tu perfil</h1>
+          </center>
+
+          <section class="DatosPersonales">
+            <div class="DatosUsuario">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="86"
+                height="86"
+                fill="currentColor"
+                class="bi bi-person-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"
+                />
+              </svg>
+              <hr class="DivisorVertical" />
+              <div>
+                <h2 id="profile-username">Username</h2>
+                <h5 id="profile-userid">User ID:</h5>
               </div>
             </div>
-          </div>
-        </section>
+            <div class="botones">
+              <button
+                class="btnEditar"
+                onclick="window.location.href='editar.html'"
+              >
+                Editar Datos
+              </button>
+              <button id="CerrarSesion" class="btnCerrarSesion">
+                Cerrar Sesion
+              </button>
+            </div>
+          </section>
 
-        <section class="HistorialPanel">
-          <div class="Historial Card">
-            <h3>Historial</h3>
-            <hr />
-            <ol>
-              <li>Real vs Fc Barca | <strong>Ganado</strong></li>
-              <li>Real vs Fc Barca | <strong>Ganado</strong></li>
-              <li>Real vs Fc Barca | <strong>Perdido</strong></li>
-            </ol>
-          </div>
-        </section>
-      </div>
+          <section class="Paneles">
+            <div class="Saldo Card">
+              <div class="SaldoTexto">
+                <h3>Mi balance</h3>
+                <h1 id="profile-balance">0.00</h1>
+                <p>Ingresado hoy: <strong>0</strong></p>
+              </div>
+              <div class="USDtexto">
+                <h4>USD$</h4>
+                <input
+                  type="number"
+                  id="amount-input"
+                  placeholder="Monto"
+                />
+                <button class="AgregarFondos">Agregar Fondos</button>
+              </div>
+            </div>
+
+            <div class="Estadisticas Card">
+              <h3>Estadisticas</h3>
+              <hr />
+              <div class="EstadisticasGrid">
+                <div class="statBox">
+                  <p>Total de Parleys</p>
+                  <h2>0</h2>
+                </div>
+                <div class="statBox">
+                  <p>Total de victorias</p>
+                  <h2>0</h2>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="HistorialPanel">
+            <div class="Historial Card">
+              <h3>Historial</h3>
+              <hr />
+              <ol>
+                <li>Real vs Fc Barca | <strong>Ganado</strong></li>
+                <li>Real vs Fc Barca | <strong>Ganado</strong></li>
+                <li>Real vs Fc Barca | <strong>Perdido</strong></li>
+              </ol>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
 
-
     <!--Aqui va el footer-->
-  <footer id="footer"></footer>
+    <footer id="footer"></footer>
 
     <!--Aqui van los importes js-->
+    <script src="../js/components.js"></script>
     <script src="../js/perfil.js"></script>
   </body>
 </html>
