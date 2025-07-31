@@ -1,14 +1,10 @@
-
-
 import { getActiveEventsFromDB, getUpcomingEventsWithOdds } from '../services/odd-api.service.js';
 import { formatResponse } from '../utils/format.js';
 
 export const getEvents = async (request, reply) => {
     try {
-        // Obtenemos el sport_key de los query parameters (ej. /api/v1/events?sport_key=soccer_epl)
-        // Si no se proporciona, sport_key será 'undefined' y el servicio lo manejará como 'null'.
         const { sport_key } = request.query; 
-        
+
         // Llamamos al servicio para obtener los eventos, pasándole el sport_key
         const events = await getActiveEventsFromDB(sport_key); 
         
@@ -19,14 +15,9 @@ export const getEvents = async (request, reply) => {
     }
 };
 
-// **Definición de syncEventsWithOddsAPI: Una sola vez.**
-// Controlador para forzar la sincronización con The Odds API.
-// Este endpoint es útil para actualizar manualmente los eventos en tu base de datos.
-// Opcionalmente, puedes pasar parámetros de query como 'sport', 'regions', etc.
 export const syncEventsWithOddsAPI = async (request, reply) => {
     try {
         // Extraemos los parámetros de query que podrían venir en la URL
-        // Por ejemplo: /api/v1/events/sync?sport=soccer_epl&regions=us
         const { sport, regions, markets, oddsFormat } = request.query;
 
         // Si se especificó un deporte en la URL, sincronizamos solo ese.

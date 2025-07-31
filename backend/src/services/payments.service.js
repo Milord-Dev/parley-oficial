@@ -18,9 +18,9 @@ export const createProductAndPrice = async ({ name, amount }) => {
 
 export const createCheckoutSession = async ({
   amount, // Nuevo parámetro para el monto
-  productName = 'Agregar fondos', // Nuevo parámetro para el nombre del producto, con un valor por defecto
+  productName = 'Agregar fondos', // parámetro para el nombre del producto con un valor por defecto
   userId,
-  priceId, // Opcional: si ya tienes un priceId existente
+  priceId, 
 }) => {
   let lineItemsConfig;
 
@@ -35,7 +35,7 @@ export const createCheckoutSession = async ({
         product_data: {
           name: productName
         },
-        unit_amount: Math.round(parseFloat(amount) * 100), // Siempre en centavos
+        unit_amount: Math.round(parseFloat(amount) * 100),
       },
       quantity: 1,
     }];

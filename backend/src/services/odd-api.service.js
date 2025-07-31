@@ -1,6 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { Event } from '../models/events.js'; // Esto va a importar el modelo del event.js
+import { Event } from '../models/events.js';
 import { isWithinInterval, addHours, addDays } from 'date-fns'; // Para manejar el tiempo de los eventos
 
 dotenv.config();
@@ -53,15 +53,15 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
     }
 
     const url = `${ODDS_API_BASE_URL}/v4/sports/${sport}/odds?apiKey=${ODDS_API_KEY}&regions=${regions}&markets=${markets}&oddsFormat=${oddsFormat}`;
-    console.log(`[SYNC - ${sport}] Intentando obtener datos de: ${url}`); // LOG 1: URL de la petición
+    console.log(`[SYNC - ${sport}] Intentando obtener datos de: ${url}`); //URL de la petición
 
     try {
         const response = await axios.get(url);
         
-        console.log(`[SYNC - ${sport}] Respuesta HTTP Status: ${response.status}`); // LOG 2: Status HTTP
+        console.log(`[SYNC - ${sport}] Respuesta HTTP Status: ${response.status}`); 
         
         const eventData = response.data;
-        console.log(`[SYNC - ${sport}] Recibidos ${eventData.length} eventos para procesar.`); // LOG 3: Cantidad de eventos recibidos
+        console.log(`[SYNC - ${sport}] Recibidos ${eventData.length} eventos para procesar.`); //Cantidad de eventos recibidos
 
         if (eventData.length === 0) {
             console.log(`[SYNC - ${sport}] No hay eventos para este deporte en este momento. Saltando el procesamiento.`);
@@ -100,7 +100,7 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
                         outcomes: foundH2hMarket.outcomes.map(outcome => ({
                             name: outcome.name,
                             price: outcome.price,
-                            point: outcome.point // Puede ser undefined si no aplica
+                            point: outcome.point 
                         }))
                     };
                      console.log(`[SYNC] Cuotas H2H construidas para guardar:`, JSON.stringify(mainOdds.outcomes));
@@ -141,29 +141,29 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
                 console.log(`[SYNC - ${sport}] Nuevo evento ${event.id} (${event.home_team} vs ${event.away_team}) guardado.`); // LOG 5: Nuevo evento
             }
         }
-        console.log(`[SYNC - ${sport}] Sincronización completa para ${sport}.`); // LOG 6: Sincronización exitosa
+        console.log(`[SYNC - ${sport}] Sincronización completa para ${sport}.`); // Sincronización exitosa
         return { success: true, message: `Sincronización de ${sport} completada.` };
     } catch (error) {
-        console.error(`[SYNC - ${sport}] ERROR en getUpcomingEventsWithOdds:`); // LOG 7: Error general
+        console.error(`[SYNC - ${sport}] ERROR en getUpcomingEventsWithOdds:`); // Error general
         if (axios.isAxiosError(error)) { // Esto es para errores de Axios específicamente
             if (error.response) {
-                // El error es una respuesta HTTP de la API (4xx, 5xx)
+                // El error es una respuesta HTTP de la API 
                 console.error(`[SYNC - ${sport}] Error de la API: Status ${error.response.status}, Data:`, error.response.data);
                 console.error(`[SYNC - ${sport}] Headers:`, error.response.headers);
                 throw new Error(`Error de la API (${error.response.status}) al sincronizar ${sport}: ${JSON.stringify(error.response.data)}`);
             } else if (error.request) {
-                // La petición se hizo pero no se recibió respuesta (ej. problema de red/timeout)
+                // La petición se hizo pero no se recibió respuesta 
                 console.error(`[SYNC - ${sport}] No se recibió respuesta del servidor de la API (Request made, no response).`);
                 console.error(`[SYNC - ${sport}] Request data:`, error.request);
                 throw new Error(`Error de red al sincronizar ${sport}.`);
             } else {
-                // Algo más causó el error de Axios (ej. configuración, antes de enviar la petición)
+                // Algo más causó el error de Axios
                 console.error(`[SYNC - ${sport}] Error en la configuración de Axios o red local: ${error.message}`);
                 console.error(`[SYNC - ${sport}] Error Stack:`, error.stack);
                 throw new Error(`Error interno de Axios al sincronizar ${sport}: ${error.message}`);
             }
         } else {
-            // Otros errores no relacionados con Axios (ej. error en tu lógica de JS)
+            // Otros errores no relacionados con Axios
             console.error(`[SYNC - ${sport}] Mensaje de error interno (no Axios): ${error.message}`);
             console.error(`[SYNC - ${sport}] Error Stack:`, error.stack);
             throw new Error(`Error interno al procesar eventos para ${sport}: ${error.message}`);
@@ -172,7 +172,7 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
 };
 
 // Una función para obtener los eventos ya guardados en tu DB que estén activos/próximos
-export const getActiveEventsFromDB = async (sport_key = null) => { // Aceptar sport_key como parámetro
+export const getActiveEventsFromDB = async (sport_key = null) => { 
     try {
         const now = new Date();
         const startDate = addDays(now, -30);
@@ -190,7 +190,7 @@ export const getActiveEventsFromDB = async (sport_key = null) => { // Aceptar sp
             query.sport_key = sport_key;
         }
 
-        console.log(`Buscando eventos en DB con filtro:`, query); // Log para depuración
+        console.log(`Buscando eventos en DB con filtro:`, query);
 
         const relevantEvents = await Event.find(query).sort({ commence_time: 1 });
 

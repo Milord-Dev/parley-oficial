@@ -10,12 +10,10 @@ const marketSchema = new mongoose.Schema({
     key:{type:String, required: true}, //'h2h', 'totals', 'spreads'
     last_update:{type:Date, required: true},
     outcomes:[outcomeSchema], // Array de posibles resultados (victoria local, empate, victoria visitante)
-    // bookmakers: [bookmakerSchema] // Si quisieras guardar diferentes casas de apuestas, lo dejaremos simple por ahora
 }, { _id: false });
 
 const eventSchema = new mongoose.Schema({
     id:{type:String, unique:true, required: true, index: true}, // Array de posibles resultados (victoria local, empate, victoria visitante)
-    // bookmakers: [bookmakerSchema] // Si quisieras guardar diferentes casas de apuestas, lo dejaremos simple por ahora
     sport_key:{type:String, required: true, index: true},
     sport_title:{type:String, required: true},
     commence_time:{type:Date, required: true, index: true},
