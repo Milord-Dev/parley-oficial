@@ -23,6 +23,7 @@ const app = Fastify({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 // Servir archivos estáticos desde /frontend
 app.register(fastifyStatic, {
   root: path.join(__dirname, 'frontend'),
@@ -77,6 +78,8 @@ app.register(authRoutes, {
 app.register(paymentsRoutes, {
   prefix: "/api/v1/",
 });
+
+
 app.register(eventsRoutes, {
   prefix: "/api/v1/events",
 });
