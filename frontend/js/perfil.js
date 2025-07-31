@@ -10,7 +10,7 @@
       profileLogoutButton: document.querySelectorAll(".btnCerrarSesion"),
     };
 
-    let currentUserId = null; // Almacenamos el ID del usuario para usarlo en el pago
+    let currentUserId = null;
 
     const methods = {
       handleLogout: () => {
@@ -32,8 +32,8 @@
         }
       },
 
-      renderProfile: (user) => {
-        currentUserId = user._id; // Guardamos el userId para luego usarlo en el pago
+      renderProfile: async (user) => {
+        currentUserId = user._id;
 
         if (htmlElements.usernameDisplay) {
           htmlElements.usernameDisplay.textContent = user.nombreCompleto;
@@ -43,13 +43,8 @@
           htmlElements.userIdDisplay.textContent = `User ID: ${user._id}`;
         }
 
-        if (htmlElements.balanceDisplay) {
-          const formattedBalance = (user.balance / 100).toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-          });
-          htmlElements.balanceDisplay.textContent = formattedBalance;
-        }
+        // Obtener el balance real desde el backend
+        await methods.fetchUserBalance();
       },
 
       fetchProfileData: async (token) => {
@@ -63,11 +58,44 @@
           }
 
           const userData = await response.json();
-          methods.renderProfile(userData);
+          await methods.renderProfile(userData);
         } catch (error) {
           console.error(error);
           if (htmlElements.usernameDisplay) {
             htmlElements.usernameDisplay.textContent = "Error al cargar";
+          }
+        }
+      },
+
+   fetchUserBalance: async () => {
+        const token = localStorage.getItem("authToken");
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/v1/payments/balance`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("No se pudo obtener el balance.");
+          }
+
+          // CAMBIO AQUÍ: Desestructura 'balance'
+          const { balance } = await response.json(); // Ahora esperas { balance: X }
+
+          if (htmlElements.balanceDisplay) {
+            // Usa 'balance' directamente, ya que ya es el totalAmount
+            const formattedBalance = (balance / 100).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            });
+            htmlElements.balanceDisplay.textContent = formattedBalance;
+          }
+        } catch (error) {
+          console.error("Error al obtener el balance:", error);
+          if (htmlElements.balanceDisplay) {
+            htmlElements.balanceDisplay.textContent = "$0.00"; // Mostrar 0.00 en caso de error
           }
         }
       },
@@ -81,13 +109,13 @@
         }
 
         const amountInput = document.getElementById("amount-input");
-        const amount = parseFloat(amountInput.value);
-        if (isNaN(amount) || amount <= 0) {
+        const totalAmount  = parseFloat(amountInput.value);
+        if (isNaN(totalAmount ) || totalAmount  <= 0) {
           alert("Por favor, ingresa un monto válido.");
           return;
         }
 
-        const amountInCents = Math.round(amount * 100);
+        const amountInCents = Math.round(totalAmount  * 100);
 
         try {
           const response = await fetch(
@@ -100,7 +128,7 @@
               },
               body: JSON.stringify({
                 amount: amountInCents,
-                userId: currentUserId, // Enviamos el userId al backend
+                userId: currentUserId,
               }),
             }
           );

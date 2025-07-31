@@ -2,6 +2,7 @@
 import { updateUserBalance } from "../services/user.service.js";
 import Order from "../models/order.js";
 import Stripe from "stripe";
+import { getTotalAmountByUserId } from "../services/user.service.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -18,7 +19,7 @@ export async function createCheckout(req, reply) {
             product_data: {
               name: "Agregar fondos",
             },
-            unit_amount: amount , // Stripe espera el monto en centavos
+            unit_amount: amount, // Stripe espera el monto en centavos
           },
           quantity: 1,
         },
@@ -120,3 +121,15 @@ export async function stripeWebhook(req, reply) {
   // Responde con un 200 OK a Stripe para indicar que el evento fue recibido
   reply.send();
 }
+
+export const getUserBalance = async (request, reply) => {
+  const userId = request.user?.id; // 👈 esto depende de cómo firmaste el token
+
+  if (!userId) {
+    return reply.status(401).send({ message: 'No autorizado' });
+  }
+
+  const balance = await getTotalAmountByUserId(userId);
+  return { balance };
+};
+
