@@ -15,6 +15,14 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  status: { 
+    type: String,
+    enum: ['pending', 'succeeded', 'failed', 'refunded'], // Estados posibles de una orden
+    default: 'pending', // Estado inicial al crear la orden
+    required: true
+  },
+
   created_at: {
     type: Date,
     default: Date.now,

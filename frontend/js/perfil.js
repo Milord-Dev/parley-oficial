@@ -86,7 +86,7 @@
 
           if (htmlElements.balanceDisplay) {
             // Usa 'balance' directamente, ya que ya es el totalAmount
-            const formattedBalance = (balance / 100).toLocaleString("en-US", {
+            const formattedBalance = balance.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             });

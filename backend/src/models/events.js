@@ -3,22 +3,22 @@ import mongoose from 'mongoose';
 const outcomeSchema = new mongoose.Schema({
     name:{type:String, required: true}, // 'Home Team', 'Away Team', 'Draw'
     price:{type:Number, required: true}, // Precio de la apuesta
-    point:{type:Number, required: true}, // Si es una apuesta de spread
-});
+    point:{type:Number, required: false}, 
+}, { _id: false });
 
 const marketSchema = new mongoose.Schema({
     key:{type:String, required: true}, //'h2h', 'totals', 'spreads'
     last_update:{type:Date, required: true},
-    outcomeSchema:[outcomeSchema], // Array de posibles resultados (victoria local, empate, victoria visitante)
+    outcomes:[outcomeSchema], // Array de posibles resultados (victoria local, empate, victoria visitante)
     // bookmakers: [bookmakerSchema] // Si quisieras guardar diferentes casas de apuestas, lo dejaremos simple por ahora
-})
+}, { _id: false });
 
 const eventSchema = new mongoose.Schema({
-    id:{type:String, unique:true, required: true}, // Array de posibles resultados (victoria local, empate, victoria visitante)
+    id:{type:String, unique:true, required: true, index: true}, // Array de posibles resultados (victoria local, empate, victoria visitante)
     // bookmakers: [bookmakerSchema] // Si quisieras guardar diferentes casas de apuestas, lo dejaremos simple por ahora
-    sport_key:{type:String, required: true},
+    sport_key:{type:String, required: true, index: true},
     sport_title:{type:String, required: true},
-    commence_time:{type:Date, required: true},
+    commence_time:{type:Date, required: true, index: true},
     home_team:{type:String, required: true},
     away_team:{type:String,required: true},
 
@@ -33,5 +33,6 @@ const eventSchema = new mongoose.Schema({
     },
     {timestamps: true}
 );
+eventSchema.index({ sport_key: 1, commence_time: 1 });
 
 export const Event = mongoose.model('Event',eventSchema)

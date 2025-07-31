@@ -1,14 +1,8 @@
-// /Backend/src/controllers/events.controller.js
 
-// **Importaciones: Una sola vez al principio del archivo.**
-// Importamos las funciones necesarias del servicio de la API de Odds.
-// 'getUpcomingEventsWithOdds' es la que va a la API externa y guarda los datos.
-// 'getActiveEventsFromDB' es la que consulta tu propia base de datos.
+
 import { getActiveEventsFromDB, getUpcomingEventsWithOdds } from '../services/odd-api.service.js';
+import { formatResponse } from '../utils/format.js';
 
-// **Definición de getEvents: Una sola vez.**
-// Controlador para obtener los eventos desde la base de datos
-// Ahora acepta un 'sport_key' como query parameter para filtrar los resultados.
 export const getEvents = async (request, reply) => {
     try {
         // Obtenemos el sport_key de los query parameters (ej. /api/v1/events?sport_key=soccer_epl)
@@ -18,7 +12,7 @@ export const getEvents = async (request, reply) => {
         // Llamamos al servicio para obtener los eventos, pasándole el sport_key
         const events = await getActiveEventsFromDB(sport_key); 
         
-        return reply.send(events);
+        reply.send(formatResponse(true, 'Eventos obtenidos con éxito', events));
     } catch (error) {
         request.log.error(error); // Registrar el error en los logs del servidor
         return reply.status(500).send({ message: 'Error al obtener los eventos.', error: error.message });
@@ -54,11 +48,11 @@ export const syncEventsWithOddsAPI = async (request, reply) => {
             'baseball_mlb',
             'tennis',
             
-            // Añade aquí cualquier otro sport_key que te interese sincronizar por defecto
+            
         ];
 
-        // Usamos Promise.all para hacer las llamadas a la API de forma concurrente,
-        // lo que es más eficiente que esperar una por una.
+        // Usamos Promise.all para hacer las llamadas a la API de forma concurrente
+       
         const syncPromises = sportsToSync.map(s => 
             getUpcomingEventsWithOdds(s, 'us', 'h2h', 'decimal')
         );

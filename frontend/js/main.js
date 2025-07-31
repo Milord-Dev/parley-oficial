@@ -7,8 +7,20 @@
             sportCategoryHeaders: document.querySelectorAll('.sport-category__header'),
             mainContentTitle: document.querySelector('.main-content .content-title h2'), // Seleccionar el h2 dentro de .content-title
             mainContentIcon: document.querySelector('.main-content .content-title .sport-icon-img'), // Seleccionar la imagen dentro de .content-title
-            sportCategoryLists: document.querySelectorAll('.sport-category__list') // Nuevos elementos para las listas de ligas
+            sportCategoryLists: document.querySelectorAll('.sport-category__list'), // Nuevos elementos para las listas de ligas
+            
+            //eventos para el 'boleto de apuesta'
+            betSlipContainer: document.getElementById('bet-slip-container'),
+            betSlipContent: document.getElementById('bet-slip-content'),
+            betSlipForm: document.getElementById('bet-slip-form'),
+            betAmountInput: document.getElementById('bet-amount'),
+            potentialWinningsEl: document.getElementById('potential-winnings'),
+            placeBetBtn: document.getElementById('place-bet-btn'),
+            betSlipMessage: document.getElementById('bet-slip-message'),
+
         };
+
+        let currentBetSelection = null;
 
         const methods = {
 
@@ -24,28 +36,40 @@
 
                 let eventsHtml = '';
                 events.forEach(event => {
-                    const homeOdds = event.main_moneyline_odds?.outcomes?.find(o => o.name === event.home_team)?.price || 'N/A';
-                    const awayOdds = event.main_moneyline_odds?.outcomes?.find(o => o.name === event.away_team)?.price || 'N/A';
-                    const drawOdds = event.main_moneyline_odds?.outcomes?.find(o => o.name === 'Draw')?.price || 'N/A';
+                    const h2hOdds = event.main_moneyline_odds;
+                    
+                    // Verificaciones más seguras para las cuotas
+                    const homeOutcome = h2hOdds?.outcomes?.find(o => o.name === event.home_team);
+                    const awayOutcome = h2hOdds?.outcomes?.find(o => o.name === event.away_team);
+                    const drawOutcome = h2hOdds?.outcomes?.find(o => o.name === 'Draw');
 
-                    const eventDate = new Date(event.commence_time);
-                    const formattedDate = eventDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
-                    const formattedTime = eventDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                    const formattedDate = new Date(event.commence_time).toLocaleString('es-ES', { 
+                        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+                    });
+
+                    // Genera los botones de apuesta solo si las cuotas existen, de lo contrario muestra 'N/A'
+                    const betButtonsHtml = homeOutcome && awayOutcome ? `
+                        <button class="bet-btn" data-market-key="h2h" data-outcome-name="${homeOutcome.name}" data-odds="${homeOutcome.price}">1: ${homeOutcome.price}</button>
+                        ${drawOutcome ? `<button class="bet-btn" data-market-key="h2h" data-outcome-name="${drawOutcome.name}" data-odds="${drawOutcome.price}">X: ${drawOutcome.price}</button>` : ''}
+                        <button class="bet-btn" data-market-key="h2h" data-outcome-name="${awayOutcome.name}" data-odds="${awayOutcome.price}">2: ${awayOutcome.price}</button>
+                    ` : '<div class="no-odds">Cuotas no disponibles</div>';
 
                     eventsHtml += `
-                    <div class="event-card">
+                    <div class="event-card" 
+                        data-event-id="${event._id}"
+                        data-home-team="${event.home_team}"  
+                         data-away-team="${event.away_team}"  
+                    >
                         <div class="event-info">
-                            <div class="event-info__league">${event.sport_title || 'Liga Desconocida'}</div>
+                            <div class="event-info__league">${event.sport_title || 'Liga'}</div>
                             <div class="event-info__teams">${event.home_team} <br> VS <br> ${event.away_team}</div>
-                            <div class="event-info__time">${formattedDate} - ${formattedTime}</div>
+                            <div class="event-info__time">${formattedDate}</div>
                         </div>
                         <div class="event-markets">
                             <div class="market-group">
                                 <div class="market-title">Ganador</div>
                                 <div class="bet-options">
-                                    <button class="bet-btn" data-team="${event.home_team}">${homeOdds}</button>
-                                    ${drawOdds !== 'N/A' ? `<button class="bet-btn" data-team="Draw">${drawOdds}</button>` : ''}
-                                    <button class="bet-btn" data-team="${event.away_team}">${awayOdds}</button>
+                                    ${betButtonsHtml}
                                 </div>
                             </div>
                             <button class="bet-btn bet-btn--more">+18</button>
@@ -56,6 +80,30 @@
                 htmlElements.eventsContainer.innerHTML = eventsHtml;
             },
 
+            setupSportCategoryToggle: () => {
+            htmlElements.sportCategoryHeaders.forEach(header => {
+                // Evitamos añadir el listener si ya existe uno por setupSportCategoryClick
+                // Este listener es solo para el toggle visual
+                header.addEventListener('click', (event) => {
+                    // Asegurarse de que el clic no proviene de una liga específica dentro de la lista
+                    if (event.target.tagName === 'LI') {
+                        return; // No hacer toggle si clicamos en la liga
+                    }
+                    const sportCategory = header.closest('.sport-category');
+                    const list = sportCategory.querySelector('.sport-category__list');
+                    const arrow = header.querySelector('span:last-child');
+
+                    header.classList.toggle('active');
+                    list.classList.toggle('hidden');
+
+                    if (list.classList.contains('hidden')) {
+                        arrow.textContent = '▼';
+                    } else {
+                        arrow.textContent = '▲';
+                    }
+                });
+            });
+        },
             // Obtiene los eventos de la API y los renderiza
             // Ahora acepta un sport_key para filtrar
             fetchAndRenderEvents: async (sport_key = null) => {
@@ -88,8 +136,14 @@
                         throw new Error('Error al obtener los eventos del servidor.');
                     }
 
-                    const eventsData = await response.json();
-                    methods.renderEvents(eventsData);
+                    const result = await response.json();
+
+
+                    if (!result.success) { // Si el backend indica un fallo
+                        throw new Error(result.message || 'Error desconocido al procesar eventos.');
+                    }
+
+                    methods.renderEvents(result.data);
 
                 } catch (error) {
                     console.error(error);
@@ -99,114 +153,160 @@
                 }
             },
 
-            // Función para manejar el toggle del sidebar
-            setupSportCategoryToggle: () => {
-                htmlElements.sportCategoryHeaders.forEach(header => {
-                    // Evitamos añadir el listener si ya existe uno por setupSportCategoryClick
-                    // Este listener es solo para el toggle visual
-                    header.addEventListener('click', (event) => {
-                        // Asegurarse de que el clic no proviene de una liga específica dentro de la lista
+            //se reemplaza el toogle y se unicfca con el category click 
+            setupSportCategoryClick: () => {
+                const handleSelection = (element, isLeague) => {
+                    const sport_key = element.dataset.sportKey;
+                    const name = isLeague ? element.dataset.leagueName : element.querySelector('span:first-child').textContent.trim();
+                    const iconSrc = element.closest('.sport-category').querySelector('.sport-icon-img').src;
+
+                    if (htmlElements.mainContentTitle) htmlElements.mainContentTitle.textContent = name;
+                    if (htmlElements.mainContentIcon) htmlElements.mainContentIcon.src = iconSrc;
+
+                    methods.fetchAndRenderEvents(sport_key);
+                };
+
+                htmlElements.sportCategoryLists.forEach(list => {
+                    list.addEventListener('click', (event) => {
                         if (event.target.tagName === 'LI') {
-                            return; // No hacer toggle si clicamos en la liga
-                        }
-                        const sportCategory = header.closest('.sport-category');
-                        const list = sportCategory.querySelector('.sport-category__list');
-                        const arrow = header.querySelector('span:last-child');
-
-                        header.classList.toggle('active');
-                        list.classList.toggle('hidden');
-
-                        if (list.classList.contains('hidden')) {
-                            arrow.textContent = '▼';
-                        } else {
-                            arrow.textContent = '▲';
+                            handleSelection(event.target, true);
                         }
                     });
                 });
             },
 
-            // Nueva función para manejar el clic en los encabezados de deportes Y en las ligas
-            setupSportCategoryClick: () => {
-                // A. Listener para los encabezados de los deportes (para filtrar por deporte general)
-                htmlElements.sportCategoryHeaders.forEach(header => {
-                    header.addEventListener('click', (event) => {
-                        // Si el clic viene de un LI dentro de la lista, ignoramos este listener
-                        if (event.target.tagName === 'LI' || event.target.closest('ul.sport-category__list')) {
-                            return;
-                        }
+            //Maneja el clic en un botón de apuesta de una tarjeta de evento.
+            handleBetButtonClick: (event) => {
+                const betButton = event.target.closest('.bet-btn');
+                if (!betButton || !betButton.dataset.marketKey){
+                    return;
+                } 
 
-                        const sportNameSpan = header.querySelector('span:first-child');
-                        const sportIconImg = sportNameSpan.querySelector('.sport-icon-img');
-                        // Extraer solo el texto del deporte, sin el icono
-                        const sportText = sportNameSpan.childNodes[2] ? sportNameSpan.childNodes[2].textContent.trim() : sportNameSpan.textContent.trim();
-                        let iconSrc = sportIconImg ? sportIconImg.src : '';
+                const eventCard = betButton.closest('.event-card');
+                
+                // Añade una verificación por si no se encuentra la tarjeta del evento (aunque no debería pasar si el botón es clicable)
+                if (!eventCard) {
+                    console.error("Error: No se encontró el elemento '.event-card' padre del botón de apuesta.");
+                    return;
+                }
 
-                        let sport_key;
-                        switch (sportText) {
-                            case 'Fútbol':
-                                sport_key = 'soccer'; // General para fútbol
-                                break;
-                            case 'Básquetbol':
-                                sport_key = 'basketball'; // General para básquetbol
-                                break;
-                            case 'Beisbol':
-                                sport_key = 'baseball'; // General para béisbol
-                                break;
-                            case 'Tenis':
-                                sport_key = 'tennis'; // General para tenis
-                                break;
-                            default:
-                                sport_key = null; // Cargar todos si no se reconoce
-                        }
+                currentBetSelection = {
+                    eventId: eventCard.dataset.eventId,
+                    marketKey: betButton.dataset.marketKey,
+                    outcomeName: betButton.dataset.outcomeName,
+                    odds: parseFloat(betButton.dataset.odds),
+                    homeTeam: eventCard.dataset.homeTeam,
+                    awayTeam: eventCard.dataset.awayTeam,
+                };
+                
+                methods.updateBetSlipUI();
+            },
+            
+            //Actualiza la interfaz del boleto de apuesta basado en la selección actual.
+            updateBetSlipUI: () => {
+                if (currentBetSelection) {
+                    
+                    htmlElements.betSlipContainer.classList.remove('hidden');
 
-                        if (htmlElements.mainContentTitle) {
-                            htmlElements.mainContentTitle.textContent = sportText;
-                        }
-                        if (htmlElements.mainContentIcon && iconSrc) {
-                            htmlElements.mainContentIcon.src = iconSrc;
-                        }
+                    htmlElements.betSlipContent.innerHTML = `
+                        <div class="bet-slip-selection">
+                            <p class="teams">${currentBetSelection.homeTeam} vs ${currentBetSelection.awayTeam}</p>
+                            <p>Tu selección: <strong class="market">${currentBetSelection.outcomeName}</strong></p>
+                            <p>Cuota: <strong class="odds">${currentBetSelection.odds.toFixed(2)}</strong></p>
+                        </div>
+                    `;
+                    htmlElements.betSlipForm.classList.remove('hidden');
+                    htmlElements.betAmountInput.value = '';
+                    htmlElements.potentialWinningsEl.textContent = '$0.00';
+                    htmlElements.placeBetBtn.disabled = true;
+                } else {
+                    htmlElements.betSlipContent.innerHTML = '<p class="empty-slip-message">Selecciona una cuota para comenzar.</p>';
+                    htmlElements.betSlipForm.classList.add('hidden');
+                    htmlElements.betSlipContainer.classList.add('hidden');
+                }
+                methods.clearMessage();
+            },
+            
+            //Calcula y muestra las ganancias potenciales a medida que el usuario escribe el monto
+            calculateWinnings: () => {
+                const amount = parseFloat(htmlElements.betAmountInput.value);
+                if (!amount || amount <= 0 || !currentBetSelection) {
+                    htmlElements.potentialWinningsEl.textContent = '$0.00';
+                    htmlElements.placeBetBtn.disabled = true;
+                    return;
+                }
+                const potential = (amount * currentBetSelection.odds).toFixed(2);
+                htmlElements.potentialWinningsEl.textContent = `€${potential}`;
+                htmlElements.placeBetBtn.disabled = false;
+            },
+            
+            //Envía la apuesta al backend.
+            placeBet: async () => {
+                if (!currentBetSelection || htmlElements.placeBetBtn.disabled) return;
 
-                        methods.fetchAndRenderEvents(sport_key);
+                const amountInCents = Math.round(parseFloat(htmlElements.betAmountInput.value) * 100);
+
+                if (isNaN(amountInCents) || amountInCents <= 0) {
+                    methods.showMessage('Por favor, ingresa un monto válido.', 'error');
+                    htmlElements.placeBetBtn.disabled = false;
+                    htmlElements.placeBetBtn.textContent = 'Realizar Apuesta';
+                    return;
+                }
+                
+                const token = localStorage.getItem('authToken');
+                htmlElements.placeBetBtn.disabled = true;
+                htmlElements.placeBetBtn.textContent = 'Procesando...';
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/v1/bets`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            eventId: currentBetSelection.eventId,
+                            marketKey: currentBetSelection.marketKey,
+                            outcomeName: currentBetSelection.outcomeName,
+                            odds: currentBetSelection.odds,
+                            amount: amountInCents,
+                        }),
                     });
-                });
 
-                // B. Listener para los elementos de la lista de ligas (para filtrar por liga específica)
-                htmlElements.sportCategoryLists.forEach(list => {
-                    list.addEventListener('click', (event) => {
-                        if (event.target.tagName === 'LI') {
-                            const selectedLi = event.target;
-                            const sport_key = selectedLi.dataset.sportKey; // Obtener el sport_key del data-atributo
-                            const leagueName = selectedLi.dataset.leagueName; // Obtener el nombre de la liga
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || 'Error desconocido');
+                    
+                    methods.showMessage('¡Apuesta realizada con éxito!', 'success');
+                    
+                    // Si tienes una función para actualizar el saldo en el header, llámala aquí.
+                    // Por ejemplo: updateHeaderBalance(result.newBalance);
+                    
+                    currentBetSelection = null;
+                    setTimeout(() => {
+                        methods.updateBetSlipUI();
+                    }, 2000); // Resetea el boleto después de 2 segundos
 
-                            // Actualizar el título y el icono del contenido principal
-                            // Puedes buscar el icono del deporte padre si quieres, o usar uno genérico
-                            const parentSportCategory = selectedLi.closest('.sport-category');
-                            const parentSportIconImg = parentSportCategory.querySelector('.sport-icon-img');
-                            const iconSrc = parentSportIconImg ? parentSportIconImg.src : '';
+                } catch (error) {
+                    methods.showMessage(error.message, 'error');
+                } finally {
+                    htmlElements.placeBetBtn.disabled = false;
+                    htmlElements.placeBetBtn.textContent = 'Realizar Apuesta';
+                }
+            },
+            
+            /*Muestra un mensaje de exito o error en el área de mensajes del boleto
+             message - El mensaje a mostrar
+             type - success o error
+             */
+            showMessage: (message, type) => {
+                htmlElements.betSlipMessage.textContent = message;
+                htmlElements.betSlipMessage.className = `bet-slip-message ${type}`;
+            },
 
-
-                            if (htmlElements.mainContentTitle) {
-                                htmlElements.mainContentTitle.textContent = leagueName; // Mostrar el nombre de la liga
-                            }
-                            if (htmlElements.mainContentIcon && iconSrc) {
-                                htmlElements.mainContentIcon.src = iconSrc;
-                            }
-
-                            // Llamar a fetchAndRenderEvents con el sport_key específico de la liga
-                            methods.fetchAndRenderEvents(sport_key);
-
-                            // Opcional: Cerrar el acordeón después de seleccionar una liga
-                            const sportCategory = selectedLi.closest('.sport-category');
-                            const header = sportCategory.querySelector('.sport-category__header');
-                            const list = sportCategory.querySelector('.sport-category__list');
-                            const arrow = header.querySelector('span:last-child');
-
-                            header.classList.remove('active');
-                            list.classList.add('hidden');
-                            arrow.textContent = '▼';
-                        }
-                    });
-                });
+            //Limpia el área de mensajes del boleto
+            clearMessage: () => {
+                htmlElements.betSlipMessage.textContent = '';
+                htmlElements.betSlipMessage.className = 'bet-slip-message';
             }
         };
 
@@ -214,7 +314,14 @@
             init: () => {
                 methods.fetchAndRenderEvents(); // Carga inicial (todos los eventos)
                 methods.setupSportCategoryToggle(); // Configura el toggle visual
-                methods.setupSportCategoryClick(); // Configura los clics para filtrar
+                
+                methods.setupSportCategoryClick();
+                htmlElements.eventsContainer.addEventListener('click', methods.handleBetButtonClick);
+                htmlElements.betAmountInput.addEventListener('input', methods.calculateWinnings);
+                htmlElements.placeBetBtn.addEventListener('click', methods.placeBet);
+
+                // Estado inicial del boleto
+                methods.updateBetSlipUI();
             }
         };
 

@@ -1,4 +1,3 @@
-// /Backend/src/services/odd-api.service.js
 import axios from 'axios';
 import dotenv from 'dotenv';
 import { Event } from '../models/events.js'; // Esto va a importar el modelo del event.js
@@ -6,8 +5,6 @@ import { isWithinInterval, addHours, addDays } from 'date-fns'; // Para manejar 
 
 dotenv.config();
 
-// Mejor usar una variable con un nombre claro para la clave
-// Aceptar ambos por si acaso, pero preferir ODDS_API_KEY ya que es más específico para este servicio.
 const ODDS_API_KEY = process.env.ODDS_API_KEY || process.env.API_KEY; 
 
 // Asegúrate de que en tu .env, la variable se llame EXACTAMENTE 'ODDS_API_BASE_URL'.
@@ -73,6 +70,8 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
 
         // Procesar y guardar o actualizar los eventos en tu base de datos.
         for (const event of eventData) {
+
+            console.log(`[SYNC] Procesando evento de API: ${event.id} - ${event.home_team} vs ${event.away_team}`);
             // Buscamos si el evento existe para actualizarlo o crearlo
             const existingEvent = await Event.findOne({ id: event.id });
 
@@ -85,6 +84,7 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
                     if (bookmaker.markets && Array.isArray(bookmaker.markets)) {
                         foundH2hMarket = bookmaker.markets.find(m => m.key === 'h2h');
                         if (foundH2hMarket) {
+                            console.log(`[SYNC] Encontrado mercado H2H del bookmaker: ${bookmaker.title}`);
                             break;
                         }
                     }
@@ -103,6 +103,7 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
                             point: outcome.point // Puede ser undefined si no aplica
                         }))
                     };
+                     console.log(`[SYNC] Cuotas H2H construidas para guardar:`, JSON.stringify(mainOdds.outcomes));
                 } else {
                     console.warn(`[SYNC - ${sport}] Evento ${event.id}: Mercado 'h2h' encontrado pero sin 'outcomes'.`);
                 }
@@ -135,6 +136,7 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
                     main_moneyline_odds: mainOdds,
                     last_odds_update: new Date()
                 });
+                console.log(`[SYNC] Antes de guardar nuevo Evento ${event.id}. main_moneyline_odds será:`, JSON.stringify(mainOdds));
                 await newEvent.save();
                 console.log(`[SYNC - ${sport}] Nuevo evento ${event.id} (${event.home_team} vs ${event.away_team}) guardado.`); // LOG 5: Nuevo evento
             }

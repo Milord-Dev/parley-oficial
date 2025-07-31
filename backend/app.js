@@ -11,7 +11,9 @@ import eventsRoutes from "./src/routes/events.routes.js";
 import { connectDB } from "./src/config/db.js";
 import cron from "node-cron";
 import jwt from '@fastify/jwt';
-
+import betsRoutes from './src/routes/bets.routes.js';
+ 
+import rawBody from 'fastify-raw-body'; 
 
 // variables de entorno
 dotenv.config();
@@ -65,6 +67,14 @@ app.decorate("authenticate", async function (request, reply) {
   }
 });
 
+app.register(rawBody, {
+  field: 'rawBody', // Nombre de la propiedad en `request` (ej: request.rawBody)
+  global: false, // Solo aplica a rutas específicas
+  encoding: 'utf8', // encoding a usar (opcional)
+  routes: ['/api/v1/stripe-webhook'] // <--- ¡SOLO PARA LA RUTA DEL WEBHOOK!
+});
+
+
 
 // --- rutas del fastify ---
 app.register(userRoutes, {
@@ -83,6 +93,11 @@ app.register(paymentsRoutes, {
 app.register(eventsRoutes, {
   prefix: "/api/v1/events",
 });
+
+app.register(betsRoutes, {  //Ruta de las apuestas en sí
+  prefix: "/api/v1/bets" 
+});
+
 
 app.get("/api/v1/health", (request, reply) => {
   reply.send({ status: "OK", message: "El servidor backend está funcionando" });
