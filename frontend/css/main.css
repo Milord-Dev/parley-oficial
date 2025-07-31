@@ -361,3 +361,116 @@ a {
 .sport-category__header.active span:last-child {
     transform: rotate(180deg); /* Gira la flecha hacia arriba cuando está activo */
 }
+
+/* ############# Estilo del boleto de la apuesta ###########*/
+
+
+.bet-slip {
+    width: 280px;
+    padding: 20px;
+    background-color: #1e2a3a;
+    border-left: 1px solid #3c4a5c;
+    display: flex;
+    flex-direction: column;
+}
+
+.bet-slip.hidden {
+    display: none; /* oculto */
+}
+
+.bet-slip h3 {
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #3c4a5c;
+    padding-bottom: 10px;
+}
+
+.bet-slip-selection p {
+    margin: 0;
+    color: #a9b7c9;
+}
+
+.bet-slip-selection .teams { 
+    font-weight: bold; color: #fff; 
+}
+
+.bet-slip-selection .market { 
+    color: #82aaff; 
+}
+
+.bet-slip-selection .odds { 
+    float: right; 
+    font-weight: 
+    bold; color: #fff;
+}
+
+#bet-slip-form { 
+    margin-top: 20px; 
+}
+
+#bet-slip-form.hidden { 
+    display: none; 
+}
+
+.form-group { 
+    margin-bottom: 15px; 
+}
+
+.form-group label { 
+    display: block; 
+    color: #a9b7c9; 
+    margin-bottom: 5px; 
+}
+
+.form-group input { 
+    width: 100%; 
+    padding: 8px; 
+    background-color: #121a26; 
+    border: 1px solid #3c4a5c; 
+    color: #fff; 
+    border-radius: 4px; 
+}
+
+.bet-summary { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+    color: #fff; 
+}
+.btn-place-bet { 
+    width: 100%; 
+    padding: 12px; 
+    background-color: #5cb85c; 
+    color: #fff; 
+    border: none; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    cursor: pointer; 
+
+}
+.btn-place-bet:hover { 
+    background-color: #4cae4c; 
+}
+
+.btn-place-bet:disabled { 
+    background-color: #555; 
+    cursor: not-allowed; 
+}
+
+#bet-slip-message { 
+    margin-top: 15px; 
+    padding: 10px; 
+    border-radius: 4px; 
+    color: #fff; 
+    text-align: center; 
+}
+
+#bet-slip-message.success { 
+    background-color: #28a745; 
+}
+
+#bet-slip-message.error { 
+    background-color: #dc3545; 
+}

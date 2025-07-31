@@ -1,4 +1,3 @@
-// payments.services.js
 import Stripe from "stripe";
 import dotenv from "dotenv";
 dotenv.config();
@@ -14,9 +13,9 @@ export const createProductAndPrice = async ({ name, amount }) => {
   });
 };
 
-// --- CAMBIO IMPORTANTE AQUÍ ---
-// Ahora esta función puede crear la sesión de checkout directamente con el monto y nombre del producto,
-// o si ya tienes un priceId predefinido, puedes usarlo.
+
+// esta función puede crear la sesión de checkout directamente con el monto y nombre del producto
+
 export const createCheckoutSession = async ({
   amount, // Nuevo parámetro para el monto
   productName = 'Agregar fondos', // Nuevo parámetro para el nombre del producto, con un valor por defecto
@@ -26,17 +25,17 @@ export const createCheckoutSession = async ({
   let lineItemsConfig;
 
   if (priceId) {
-    // Si se proporciona un priceId, úsalo
+    // Si se proporciona un priceId lo usamos
     lineItemsConfig = [{ price: priceId, quantity: 1 }];
   } else if (amount) {
-    // Si se proporciona un monto, crea la price_data inline
+    // Si se proporciona un monto crea la price_data inline
     lineItemsConfig = [{
       price_data: {
         currency: 'usd',
         product_data: {
           name: productName
         },
-        unit_amount: amount * 100, // Siempre en centavos
+        unit_amount: Math.round(parseFloat(amount) * 100), // Siempre en centavos
       },
       quantity: 1,
     }];
@@ -52,7 +51,7 @@ export const createCheckoutSession = async ({
     payment_method_types: ["card"],
     metadata: {
       userId, // Pasamos el userId para luego obtenerlo en el webhook
-      amount: amount ? amount.toString() : 'N/A' // Guardar el monto original si está disponible
+      amount: Math.round(parseFloat(amount) * 100).toString() // Guardar el monto original si está disponible
     },
   });
 };
