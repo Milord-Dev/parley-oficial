@@ -1,6 +1,7 @@
 (() => {
   const ProfileModule = (() => {
     const API_BASE_URL = "http://localhost:3000";
+
     const htmlElements = {
       addFundsButton: document.querySelector(".AgregarFondos"),
       usernameDisplay: document.getElementById("profile-username"),
@@ -8,6 +9,8 @@
       balanceDisplay: document.getElementById("profile-balance"),
       profileLogoutButton: document.querySelectorAll(".btnCerrarSesion"),
     };
+
+    let currentUserId = null;
 
     const methods = {
       handleLogout: () => {
@@ -29,37 +32,33 @@
         }
       },
 
-      //Llena la página con los datos del usuario obtenidos de la API.
-      renderProfile: (user) => {
+      renderProfile: async (user) => {
+        currentUserId = user._id;
+
         if (htmlElements.usernameDisplay) {
           htmlElements.usernameDisplay.textContent = user.nombreCompleto;
         }
+
         if (htmlElements.userIdDisplay) {
           htmlElements.userIdDisplay.textContent = `User ID: ${user._id}`;
         }
-        if (htmlElements.balanceDisplay) {
-          const formattedBalance = (user.balance / 100).toLocaleString(
-            "en-US",
-            {
-              style: "currency",
-              currency: "USD",
-            }
-          );
-          htmlElements.balanceDisplay.textContent = formattedBalance;
-        }
+
+        // Obtener el balance real desde el backend
+        await methods.fetchUserBalance();
       },
 
-      //para buscar los datos del usuario logeado y desplegarlo
       fetchProfileData: async (token) => {
         try {
           const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          if (!response.ok)
+
+          if (!response.ok) {
             throw new Error("No se pudieron cargar los datos del perfil.");
+          }
 
           const userData = await response.json();
-          methods.renderProfile(userData);
+          await methods.renderProfile(userData);
         } catch (error) {
           console.error(error);
           if (htmlElements.usernameDisplay) {
@@ -68,7 +67,38 @@
         }
       },
 
-      //Maneja el clic para crear una sesión de pago con Stripe.
+   fetchUserBalance: async () => {
+        const token = localStorage.getItem("authToken");
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/v1/payments/balance`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("No se pudo obtener el balance.");
+          }
+
+          // CAMBIO AQUÍ: Desestructura 'balance'
+          const { balance } = await response.json(); // Ahora esperas { balance: X }
+
+          if (htmlElements.balanceDisplay) {
+            // Usa 'balance' directamente, ya que ya es el totalAmount
+            const formattedBalance = (balance / 100).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            });
+            htmlElements.balanceDisplay.textContent = formattedBalance;
+          }
+        } catch (error) {
+          console.error("Error al obtener el balance:", error);
+          if (htmlElements.balanceDisplay) {
+            htmlElements.balanceDisplay.textContent = "$0.00"; // Mostrar 0.00 en caso de error
+          }
+        }
+      },
 
       handleAddFunds: async () => {
         const token = localStorage.getItem("authToken");
@@ -79,13 +109,13 @@
         }
 
         const amountInput = document.getElementById("amount-input");
-        const amount = parseFloat(amountInput.value);
-        if (isNaN(amount) || amount <= 0) {
+        const totalAmount  = parseFloat(amountInput.value);
+        if (isNaN(totalAmount ) || totalAmount  <= 0) {
           alert("Por favor, ingresa un monto válido.");
           return;
         }
-        
-        const amountInCents = Math.round(amount * 100);
+
+        const amountInCents = Math.round(totalAmount  * 100);
 
         try {
           const response = await fetch(
@@ -96,14 +126,21 @@
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify({ amount: amountInCents }),
+              body: JSON.stringify({
+                amount: amountInCents,
+                userId: currentUserId,
+              }),
             }
           );
 
           const data = await response.json();
-          if (!response.ok)
+          if (!response.ok) {
             throw new Error(data.message || "Error al crear sesión de pago.");
-          if (data.url) window.location.href = data.url;
+          }
+
+          if (data.url) {
+            window.location.href = data.url;
+          }
         } catch (error) {
           console.error("Error con Stripe:", error);
           alert(error.message);
@@ -113,14 +150,12 @@
 
     return {
       init: () => {
-        // pararoteger la página
         const token = localStorage.getItem("authToken");
         if (!token) {
           window.location.href = "/frontend/pages/login.html";
           return;
         }
 
-        // Si la protección pasa cargar los datos y configurar los botones
         methods.fetchProfileData(token);
         methods.setupEventListeners();
       },
