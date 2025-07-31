@@ -1,128 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BetSlip - Apuestas Deportivas</title>
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/footer.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet"
     />
-  </head>
-  <body>
-    <!--Aqui va el header-->
+    <link rel="stylesheet" href="../css/header.css" />
+</head>
+<body>
     <header id="header"></header>
     <div class="app-layout">
-      <!-- el sidebar  -->
-      <aside class="sidebar">
+    <aside class="sidebar">
         <div class="sport-category">
-          <div class="sport-category__header">
-            <span>
-              <img
-                src="/frontend/images/icon-foot-ball.svg"
-                alt="Fútbol"
-                class="sport-icon-img"
-              />
-
-              Fútbol
-            </span>
-            <span>▼</span>
-          </div>
-          <ul class="sport-category__list">
-            <li>UEFA Champions League</li>
-            <li>FIFA World Cup</li>
-            <li>England Premier League</li>
-          </ul>
+            <div class="sport-category__header">
+                <span>
+                    <img src="/frontend/images/icon-foot-ball.svg" alt="Fútbol" class="sport-icon-img" />
+                    Fútbol
+                </span>
+                <span>▼</span>
+            </div>
+            <ul class="sport-category__list hidden">
+                <li data-sport-key="soccer_uefa_champs_league" data-league-name="UEFA Champions League">UEFA Champions League</li>
+                <li data-sport-key="soccer_fifa_world_cup" data-league-name="FIFA World Cup">FIFA World Cup</li>
+                <li data-sport-key="soccer_epl" data-league-name="England Premier League">England Premier League</li>
+            </ul>
         </div>
 
         <div class="sport-category">
-          <div class="sport-category__header">
-            <span>
-              <img
-                src="/frontend/images/icon-basket-ball.svg"
-                alt="BasketBall"
-                class="sport-icon-img"
-              />
-
-              Básquetbol
-            </span>
-            <span>▼</span>
-          </div>
-          <ul class="sport-category__list">
-            <li>NBA</li>
-            <li>WNBA</li>
-          </ul>
+            <div class="sport-category__header">
+                <span>
+                    <img src="/frontend/images/icon-basket-ball.svg" alt="BasketBall" class="sport-icon-img" />
+                    Básquetbol
+                </span>
+                <span>▼</span>
+            </div>
+            <ul class="sport-category__list hidden">
+                <li data-sport-key="basketball_nba" data-league-name="NBA">NBA</li>
+                <li data-sport-key="basketball_wnba" data-league-name="WNBA">WNBA</li>
+            </ul>
         </div>
 
         <div class="sport-category">
-          <div class="sport-category__header">
-            <span>
-              <img
-                src="/frontend/images/icon-base-ball.svg"
-                alt="BaseBall"
-                class="sport-icon-img"
-              />
-
-              Beisból
-            </span>
-            <span>▼</span>
-          </div>
-          <ul class="sport-category__list">
-            <li>MLB</li>
-            <li>?</li>
-          </ul>
+            <div class="sport-category__header">
+                <span>
+                    <img src="/frontend/images/icon-base-ball.svg" alt="BaseBall" class="sport-icon-img" />
+                    Beisbol
+                </span>
+                <span>▼</span>
+            </div>
+            <ul class="sport-category__list hidden">
+                <li data-sport-key="baseball_mlb" data-league-name="MLB">MLB</li>
+                <li data-sport-key="baseball_japan_npb" data-league-name="NPB">NPB</li>
+            </ul>
         </div>
 
         <div class="sport-category">
-          <div class="sport-category__header">
-            <span>
-              <img
-                src="/frontend/images/icon-tennis.svg"
-                alt="Tenis"
-                class="sport-icon-img"
-              />
-
-              Tenis
-            </span>
-            <span>▼</span>
-          </div>
-          <ul class="sport-category__list">
-            <li>Wimbledon</li>
-            <li>?</li>
-          </ul>
+            <div class="sport-category__header">
+                <span>
+                    <img src="/frontend/images/icon-tennis.svg" alt="Tenis" class="sport-icon-img" />
+                    Tenis
+                </span>
+                <span>▼</span>
+            </div>
+            <ul class="sport-category__list hidden">
+                <li data-sport-key="tennis" data-league-name="WTA / ATP">Wimbledon</li>
+                <li data-sport-key="tennis" data-league-name="WTA / ATP">ATP</li>
+            </ul>
         </div>
-      </aside>
 
-      <!-- Contenido Principal -->
-      <main class="main-content">
+    </aside>
+
+    <main class="main-content">
         <img
-          src="/frontend/images/fulbo_def.jpg"
-          alt="Partido de futbol"
-          class="hero-image"
+            src="/frontend/images/fulbo_def.jpg"
+            alt="Partido de futbol"
+            class="hero-image"
         />
 
         <div class="content-title">
-          <img
-            src="/frontend/images/icon-foot-ball.svg"
-            alt="Fútbol"
-            class="sport-icon-img"
-          />
+            <img
+                src="/frontend/images/icon-foot-ball.svg"
+                alt="Fútbol"
+                class="sport-icon-img"
+            />
 
-          <h2>Fútbol</h2>
+            <h2>Fútbol</h2>
         </div>
 
-        <!-- El contenedor para los eventos se llenará con JavaScript -->
         <div id="events-container"></div>
-      </main>
+    </main>
     </div>
 
-    <!--Aqui va el footer-->
     <footer id="footer"></footer>
 
-    <!--Aqui van los importes js-->
     <script src="../js/main.js"></script>
     <script src="../js/components.js"></script>
-  </body>
+</body>
 </html>

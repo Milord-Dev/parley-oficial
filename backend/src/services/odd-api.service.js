@@ -6,94 +6,125 @@ import { isWithinInterval, addHours, addDays } from 'date-fns'; // Para manejar 
 
 dotenv.config();
 
-const API_KEY = process.env.API_KEY;
-// Asegúrate de que en tu .env, la variable se llame EXACTAMENTE 'ODDS_API_BASE_URL'
-// como te indiqué anteriormente, no 'BASE_URL', para evitar confusiones.
-const ODDS_API_BASE_URL = process.env.ODDS_API_BASE_URL; // Corregido: debería ser ODDS_API_BASE_URL
+// Mejor usar una variable con un nombre claro para la clave
+// Aceptar ambos por si acaso, pero preferir ODDS_API_KEY ya que es más específico para este servicio.
+const ODDS_API_KEY = process.env.ODDS_API_KEY || process.env.API_KEY; 
+
+// Asegúrate de que en tu .env, la variable se llame EXACTAMENTE 'ODDS_API_BASE_URL'.
+const ODDS_API_BASE_URL = process.env.ODDS_API_BASE_URL;
 
 // Función para obtener los deportes disponibles
 export const getSports = async () => {
     try {
-        // CORRECCIÓN: Usar template literal para la URL correctamente con backticks (`)
-        const response = await axios.get(`${ODDS_API_BASE_URL}/v4/sports/?apiKey=${API_KEY}`);
+        if (!ODDS_API_KEY) {
+            console.error('ERROR: No se encontró la API Key (ODDS_API_KEY/API_KEY) para The Odds API.');
+            throw new Error('API Key de The Odds API no configurada.');
+        }
+        if (!ODDS_API_BASE_URL) {
+            console.error('ERROR: No se encontró la URL Base de The Odds API (ODDS_API_BASE_URL).');
+            throw new new Error('URL Base de The Odds API no configurada.');
+        }
+        const response = await axios.get(`${ODDS_API_BASE_URL}/v4/sports/?apiKey=${ODDS_API_KEY}`);
         return response.data;
     } catch (error) {
         console.error('Error al obtener los deportes:', error.message);
+        if (axios.isAxiosError(error)) { // Verifica si es un error de Axios
+            if (error.response) {
+                console.error('Detalles del error de la API (getSports):', error.response.status, error.response.data);
+            } else if (error.request) {
+                console.error('No se recibió respuesta del servidor de la API (getSports).');
+                console.error('Datos de la petición (getSports):', error.request);
+            } else {
+                console.error('Error de configuración de Axios o de red (getSports):', error.message);
+            }
+        } else {
+            console.error('Error inesperado (getSports):', error);
+        }
         throw new Error('Error al obtener los deportes');
     }
 };
 
 // Función principal para obtener los eventos y cuotas
-export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 'us', markets = 'h2h', oddsFormat = 'decimal') => { // <-- ¡CORRECCIÓN AQUÍ!
-    try {
-        const url = `${ODDS_API_BASE_URL}/v4/sports/${sport}/odds?apiKey=${API_KEY}&regions=${regions}&markets=${markets}&oddsFormat=${oddsFormat}`;
-        console.log(`Obteniendo probabilidades de: ${url}`); // CORRECCIÓN: Usar template literal
+export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 'us', markets = 'h2h', oddsFormat = 'decimal') => {
+    if (!ODDS_API_KEY) {
+        console.error('ERROR: No se encontró la API Key (ODDS_API_KEY/API_KEY) para The Odds API al intentar sincronizar eventos.');
+        throw new Error('API Key de The Odds API no configurada.');
+    }
+    if (!ODDS_API_BASE_URL) {
+        console.error('ERROR: No se encontró la URL Base de The Odds API (ODDS_API_BASE_URL) para sincronizar eventos.');
+        throw new Error('URL Base de The Odds API no configurada.');
+    }
 
+    const url = `${ODDS_API_BASE_URL}/v4/sports/${sport}/odds?apiKey=${ODDS_API_KEY}&regions=${regions}&markets=${markets}&oddsFormat=${oddsFormat}`;
+    console.log(`[SYNC - ${sport}] Intentando obtener datos de: ${url}`); // LOG 1: URL de la petición
+
+    try {
         const response = await axios.get(url);
+        
+        console.log(`[SYNC - ${sport}] Respuesta HTTP Status: ${response.status}`); // LOG 2: Status HTTP
+        
         const eventData = response.data;
+        console.log(`[SYNC - ${sport}] Recibidos ${eventData.length} eventos para procesar.`); // LOG 3: Cantidad de eventos recibidos
+
+        if (eventData.length === 0) {
+            console.log(`[SYNC - ${sport}] No hay eventos para este deporte en este momento. Saltando el procesamiento.`);
+            return { success: true, message: `No hay eventos para ${sport}.` };
+        }
 
         // Procesar y guardar o actualizar los eventos en tu base de datos.
         for (const event of eventData) {
             // Buscamos si el evento existe para actualizarlo o crearlo
             const existingEvent = await Event.findOne({ id: event.id });
 
-            // CORRECCIÓN: La estructura de la API es bookmakers -> markets -> outcomes
-            // Buscamos el mercado 'h2h' dentro del array de 'markets' de CADA 'bookmaker'.
-            // Tomamos el primer bookmaker que tenga el mercado h2h (o el primero en general si no hay h2h)
-            // Y de ese bookmaker, tomamos el primer mercado h2h que encontremos.
             let mainOdds = null;
             let foundH2hMarket = null;
 
             if (event.bookmakers && event.bookmakers.length > 0) {
                 for (const bookmaker of event.bookmakers) {
-                    foundH2hMarket = bookmaker.markets.find(m => m.key === 'h2h'); // Buscamos el mercado 'h2h'
-                    if (foundH2hMarket) {
-                        break; // Encontramos el mercado en este bookmaker, salimos del bucle
+                    // Solo si bookmaker.markets existe y es un array
+                    if (bookmaker.markets && Array.isArray(bookmaker.markets)) {
+                        foundH2hMarket = bookmaker.markets.find(m => m.key === 'h2h');
+                        if (foundH2hMarket) {
+                            break;
+                        }
                     }
                 }
             }
 
             if (foundH2hMarket) {
-                mainOdds = {
-                    key: foundH2hMarket.key,
-                    last_update: new Date(foundH2hMarket.last_update), // Usar last_update según la API
-                    outcomes: foundH2hMarket.outcomes.map(outcome => ({
-                        name: outcome.name,
-                        price: outcome.price,
-                        point: outcome.point // Puede ser undefined si no aplica
-                    }))
-                };
+                // Asegurarse de que outcomes existe antes de mapear
+                if (foundH2hMarket.outcomes && Array.isArray(foundH2hMarket.outcomes)) {
+                    mainOdds = {
+                        key: foundH2hMarket.key,
+                        last_update: new Date(foundH2hMarket.last_update),
+                        outcomes: foundH2hMarket.outcomes.map(outcome => ({
+                            name: outcome.name,
+                            price: outcome.price,
+                            point: outcome.point // Puede ser undefined si no aplica
+                        }))
+                    };
+                } else {
+                    console.warn(`[SYNC - ${sport}] Evento ${event.id}: Mercado 'h2h' encontrado pero sin 'outcomes'.`);
+                }
+            } else {
+                console.warn(`[SYNC - ${sport}] Evento ${event.id}: No se encontró mercado 'h2h' en ningún bookmaker.`);
             }
 
-            // Filtramos eventos para guardar/actualizar:
-            // Ampliamos el rango para incluir eventos del pasado cercano y futuro.
             const now = new Date();
             const commenceTime = new Date(event.commence_time);
 
-            // Rango: desde 30 días en el pasado hasta 30 días en el futuro
             const isRelevantTime = isWithinInterval(commenceTime, {
-                start: addDays(now, -30), // Eventos que comenzaron hasta 30 días atrás
-                end: addDays(now, 30)     // Eventos que comienzan hasta 30 días en el futuro
+                start: addDays(now, -30),
+                end: addDays(now, 30)
             });
 
 
             if (existingEvent) {
-                // Actualizar el evento existente, especialmente las cuotas
                 existingEvent.main_moneyline_odds = mainOdds;
-                existingEvent.last_odds_update = new Date(); // Actualizamos la marca de tiempo de la última actualización
-                // PREGUNTA: ¿Puedes añadir lógica para actualizar otros campos si cambian?
-                // RESPUESTA: Sí, si otros campos como 'home_team', 'away_team', 'commence_time', etc.,
-                // pudieran cambiar en la API de Odds después de que los guardas, deberías incluirlos aquí.
-                // Por ejemplo: existingEvent.commence_time = event.commence_time;
-                // Para los datos de Odds API, generalmente solo las cuotas (odds) y last_update cambian con frecuencia.
+                existingEvent.last_odds_update = new Date();
                 await existingEvent.save();
-                // PREGUNTA: console.log(`Updated event: ${event.id}`); ¿Qué hace esto?
-                // RESPUESTA: Esto imprime un mensaje en la CONSOLA de tu servidor backend. Es muy útil para
-                // la depuración y para saber qué está haciendo tu código en segundo plano.
-                // Te dirá, por ejemplo: "Updated event: abc12345"
-                console.log(`Updated event: ${event.id}`);
-            } else if (isRelevantTime) { // Solo creamos si no existe Y si es relevante por tiempo
-                // Crear un nuevo evento si no existe y es relevante por tiempo
+                console.log(`[SYNC - ${sport}] Evento ${event.id} (${event.home_team} vs ${event.away_team}) actualizado.`); // LOG 4: Evento actualizado
+            } else if (isRelevantTime) {
                 const newEvent = new Event({
                     id: event.id,
                     sport_key: event.sport_key,
@@ -105,41 +136,64 @@ export const getUpcomingEventsWithOdds = async (sport = 'soccer_epl', regions = 
                     last_odds_update: new Date()
                 });
                 await newEvent.save();
-                // PREGUNTA: console.log(`Created new event: ${event.id}`); ¿Qué hace esto?
-                // RESPUESTA: Similar al anterior, esto imprime un mensaje en la CONSOLA de tu servidor
-                // indicando que un nuevo evento ha sido creado y guardado en la base de datos.
-                // Te dirá, por ejemplo: "Created new event: def67890"
-                console.log(`Created new event: ${event.id}`);
+                console.log(`[SYNC - ${sport}] Nuevo evento ${event.id} (${event.home_team} vs ${event.away_team}) guardado.`); // LOG 5: Nuevo evento
             }
         }
-        console.log('Successfully fetched and processed events from Odds API.');
-        // CORRECCIÓN: 'eventsData' no está definida aquí. Si necesitas devolver algo,
-        // lo más útil es devolver los 'eventData' originales de la API o un mensaje de éxito.
-        return eventData; // Retornamos los datos que obtuvimos de la API
+        console.log(`[SYNC - ${sport}] Sincronización completa para ${sport}.`); // LOG 6: Sincronización exitosa
+        return { success: true, message: `Sincronización de ${sport} completada.` };
     } catch (error) {
-        console.error('Error al procesar los eventos:', error.message);
-        if (error.response) {
-            console.error('Error response from Odds API:', error.response.data);
-            console.error('Error status:', error.response.status);
+        console.error(`[SYNC - ${sport}] ERROR en getUpcomingEventsWithOdds:`); // LOG 7: Error general
+        if (axios.isAxiosError(error)) { // Esto es para errores de Axios específicamente
+            if (error.response) {
+                // El error es una respuesta HTTP de la API (4xx, 5xx)
+                console.error(`[SYNC - ${sport}] Error de la API: Status ${error.response.status}, Data:`, error.response.data);
+                console.error(`[SYNC - ${sport}] Headers:`, error.response.headers);
+                throw new Error(`Error de la API (${error.response.status}) al sincronizar ${sport}: ${JSON.stringify(error.response.data)}`);
+            } else if (error.request) {
+                // La petición se hizo pero no se recibió respuesta (ej. problema de red/timeout)
+                console.error(`[SYNC - ${sport}] No se recibió respuesta del servidor de la API (Request made, no response).`);
+                console.error(`[SYNC - ${sport}] Request data:`, error.request);
+                throw new Error(`Error de red al sincronizar ${sport}.`);
+            } else {
+                // Algo más causó el error de Axios (ej. configuración, antes de enviar la petición)
+                console.error(`[SYNC - ${sport}] Error en la configuración de Axios o red local: ${error.message}`);
+                console.error(`[SYNC - ${sport}] Error Stack:`, error.stack);
+                throw new Error(`Error interno de Axios al sincronizar ${sport}: ${error.message}`);
+            }
+        } else {
+            // Otros errores no relacionados con Axios (ej. error en tu lógica de JS)
+            console.error(`[SYNC - ${sport}] Mensaje de error interno (no Axios): ${error.message}`);
+            console.error(`[SYNC - ${sport}] Error Stack:`, error.stack);
+            throw new Error(`Error interno al procesar eventos para ${sport}: ${error.message}`);
         }
-        throw new Error('Error al procesar los eventos');
     }
 };
 
 // Una función para obtener los eventos ya guardados en tu DB que estén activos/próximos
-export const getActiveEventsFromDB = async () => {
+export const getActiveEventsFromDB = async (sport_key = null) => { // Aceptar sport_key como parámetro
     try {
         const now = new Date();
-        // MODIFICACIÓN: Rango ampliado para obtener eventos del pasado reciente y futuro lejano
-        const startDate = addDays(now, -30); // Eventos desde 30 días atrás
-        const endDate = addDays(now, 30);   // Eventos hasta 30 días en el futuro
+        const startDate = addDays(now, -30);
+        const endDate = addDays(now, 30);
 
-        const relevantEvents = await Event.find({
+        const query = {
             commence_time: {
                 $gte: startDate,
                 $lte: endDate
             }
-        }).sort({ commence_time: 1 }); // Ordenar por fecha de inicio
+        };
+
+        // Si se proporciona un sport_key, añadirlo al filtro de la consulta
+        if (sport_key) {
+            query.sport_key = sport_key;
+        }
+
+        console.log(`Buscando eventos en DB con filtro:`, query); // Log para depuración
+
+        const relevantEvents = await Event.find(query).sort({ commence_time: 1 });
+
+        console.log(`Encontrados ${relevantEvents.length} eventos en la DB.`);
+
         return relevantEvents;
     } catch (error) {
         console.error('Error al obtener los eventos activos:', error.message);

@@ -343,4 +343,21 @@ a {
     font-weight: 700;
 }
 
+/* Estilos para el toggle del sidebar */
+.sport-category__list.hidden {
+    display: none;
+}
 
+/* Cambiar la apariencia del header cuando está activo (expandido) */
+.sport-category__header.active {
+    background-color: var(--accent-blue); /* O el color que prefieras para indicar que está abierto */
+}
+
+/* Estilo para el icono de la flecha (si quieres que gire) */
+.sport-category__header span:last-child {
+    transition: transform 0.3s ease;
+}
+
+.sport-category__header.active span:last-child {
+    transform: rotate(180deg); /* Gira la flecha hacia arriba cuando está activo */
+}
